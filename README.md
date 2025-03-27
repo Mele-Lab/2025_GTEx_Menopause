@@ -12,7 +12,7 @@ aging and menopause-associated disease risk.
 
 ## 📝 Table of Contents
 ### - 01. CNNs
-      VGG19-based CNN models' code for histological tissue tiles.
+      ####VGG19-based CNN models' code for histological tissue tiles.
 ### - 02. LIME (Local Interpretable Model-Agnostic Explanations)
       Adaptation of LIME code to our purpose: identify tile areas that contribute to each classification category using our CNN models.
 ### - 03. Tissue segmentation
