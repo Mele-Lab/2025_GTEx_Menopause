@@ -8,8 +8,7 @@ Vaginal epithelial layers also show sharp menopausal shifts, mirroring transcrip
 Transcriptomic analysis identifies thousands of age-associated genes, many with nonlinear trajectories enriched in extracellular matrix, angiogenesis, and oogenesis pathways. 
 These findings position menopause as a key inflection point in reproductive aging and provide a multimodal, tissue-resolved map with implications for understanding gynecological
 aging and menopause-associated disease risk.
-![INK_Fig1](https://github.com/user-attachments/assets/1a154aca-5eb4-48c8-8883-747c62391474)
-
+![Git_image](https://github.com/user-attachments/assets/1e58ef44-31c2-4f04-b3a5-8d089cf19405)
 
 ## 📝 Table of Contents
 ### - 01. CNNs
