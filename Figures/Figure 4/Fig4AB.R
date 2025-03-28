@@ -18,8 +18,8 @@ pal <- c("Uterus" = "#6DB6FFFF", "Ovary" = "#009292FF", "Vagina" = "#B66DFFFF", 
 tissues<-c("Uterus", "Ovary", "Vagina", "BreastMammaryTissue", "CervixEndocervix", "CervixEctocervix", "FallopianTube")
 samples_list<-list()
 probs_list<-list()
-age_file<-read.csv("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/00.Data/GTEx_Subject_Phenotypes.GRU.csv", sep="\t", header=TRUE)
-all_tissues_results<-readRDS("Desktop/TFM/bsc83671/GTEx_v8/Laura/12.Tissues_substructures/DEA/DEA_v10/Table_all_substructures_no_inter_results.rds")
+age_file<-read.csv("~/X/Laura/00.Data/GTEx_Subject_Phenotypes.GRU.csv", sep="\t", header=TRUE)
+all_tissues_results<-readRDS("X/Laura/12.Tissues_substructures/DEA/DEA_v10/Table_all_substructures_no_inter_results.rds")
 
 ###only age
 
@@ -56,8 +56,6 @@ column_annotation <- columnAnnotation(
   Direction =  c("Up-DEGs", "Down-DEGs"),
   col= list(Direction=c("Up-DEGs" = "#63B8FF", 
                         "Down-DEGs" = "#8B0000")),
-  # annotation_legend_param = list(title = "Direction", labels=c("Downregulated DEGs", "Upregulated DEGs" ), 
-  #                                labels_gp = gpar(fontsize = 14), title_gp = gpar(fontsize = 14) ),
   show_annotation_name = FALSE,
   show_legend=FALSE
 )
@@ -105,19 +103,11 @@ draw(heatmap, heatmap_legend_side = "top")
 
 # Draw the heatmap
 heatmaptot<- grid.grabExpr(draw(heatmap, heatmap_legend_side = "top"))
-pdf("Desktop/Figures/Fig4A.pdf", width = 4.5, height = 5) 
+pdf("X/Figures/Fig4A.pdf", width = 4.5, height = 5) 
 draw(heatmap, heatmap_legend_side = "top")
 dev.off()
 
-svg("Desktop/Figures/Fig4A.svg", width = 4.5, height = 5, pointsize = 12)
-draw(heatmap, heatmap_legend_side = "top")
-dev.off()
-
-pdf("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/Fig4A.pdf", width = 4.5, height = 5) 
-draw(heatmap, heatmap_legend_side = "top")
-dev.off()
-
-svg("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/Fig4A.svg", width = 4.5, height = 5, pointsize = 12)
+svg("X/Figures/Fig4A.svg", width = 4.5, height = 5, pointsize = 12)
 draw(heatmap, heatmap_legend_side = "top")
 dev.off()
 
@@ -130,7 +120,7 @@ test<- "all_cov_no_inter"
 tissues<-c("Uterus", "Ovary", "Vagina", "BreastMammaryTissue", "CervixEndocervix", "CervixEctocervix", "FallopianTube")
 #tissues<-c("CervixEndocervix", "CervixEctocervix", "FallopianTube")
 for (tissue in tissues[1:3]){
-  inpath<-paste0("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/12.Tissues_substructures/DEA/DEA_v10/", tissue, "/")
+  inpath<-paste0("~/X/Laura/12.Tissues_substructures/DEA/DEA_v10/", tissue, "/")
   all<- readRDS( paste0(inpath, test, "/", tissue, "_", test, "_AGE_covariates_and_traits.results.rds"))
   all<-all$Age
   print(paste0("#-------------- ", tissue, " - ", test, " - ", analy, " --------------#"))
@@ -150,14 +140,6 @@ gene_sets <- list(
   OvaryDown = genes$Ovary$Down,
   VaginaUp = genes$Vagina$Up,
   VaginaDown = genes$Vagina$Down
-  # BreastMammaryTissueUp = genes$BreastMammaryTissue$Up,
-  # BreastMammaryTissueDown = genes$BreastMammaryTissue$Down
-  # # EndocervixUp = genes$CervixEndocervix$Up,
-  # # EndocervixDown = genes$CervixEndocervix$Down,
-  # # EctocervixUp = genes$CervixEctocervix$Up,
-  # # EctocervixDown = genes$CervixEctocervix$Down,
-  # # FallopianTubeUp = genes$FallopianTube$Up,
-  # # FallopianTubeDown = genes$FallopianTube$Down
 )
 top<-intersect(intersect(genes$Uterus$Up, genes$Ovary$Up), genes$Vagina$Up)
 all_genes <- unique(unlist(gene_sets))
@@ -185,19 +167,11 @@ m<-upset(binary_matrix,
 library(ggplot2)
 library(dplyr)
 
-pdf("Desktop/Figures/Fig4B.pdf", width = 5.5, height = 4.5) 
+pdf("X/Figures/Fig4B.pdf", width = 5.5, height = 4.5) 
 m
 dev.off()
 
-svg("Desktop/Figures/Fig4B.svg", width = 5.5, height = 4.5, pointsize = 12)
-m
-dev.off()
-
-pdf("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/Fig4.Bpdf", width = 5.5, height = 4.5) 
-m
-dev.off()
-
-svg("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/Fig4B.svg", width = 5.5, height = 4.5, pointsize = 12)
+svg("X/Figures/Fig4B.svg", width = 5.5, height = 4.5, pointsize = 12)
 m
 dev.off()
 

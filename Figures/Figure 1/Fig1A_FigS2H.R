@@ -18,21 +18,21 @@ pal <- c("Uterus" = "#6DB6FFFF", "Ovary" = "#009292FF", "Vagina" = "#B66DFFFF", 
 tissues<-c("Uterus", "Ovary", "Vagina", "BreastMammaryTissue", "CervixEndocervix", "CervixEctocervix", "FallopianTube")
 samples_list<-list()
 probs_list<-list()
-age_file<-read.csv("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/00.Data/GTEx_Subject_Phenotypes.GRU.csv", sep="\t", header=TRUE)
+age_file<-read.csv("~/X/Laura/00.Data/GTEx_Subject_Phenotypes.GRU.csv", sep="\t", header=TRUE)
 
 for (tissue in tissues){
   
-  metadata_tot <- readRDS(paste0("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/00.Data/v10/", tissue, "/metadata.rds"))
+  metadata_tot <- readRDS(paste0("~/X/Laura/00.Data/v10/", tissue, "/metadata.rds"))
   colnames(metadata_tot)<-ifelse(colnames(metadata_tot) =="Donor","SUBJID",
                                  ifelse(colnames(metadata_tot)=="Age", "AGE", colnames(metadata_tot)))
   metadata_tot<-metadata_tot[,c("SUBJID", "AGE", "BMI")]
-  ancestry_file<- read.table("Desktop/TFM/bsc83671/GTEx_v8/Laura/00.Data/admixture_inferred_ancestry.txt")
-  ances<-ancestry_file[,c(1,3,4)]
+  ancestry_file<- read.table("X/Laura/00.Data/admixture_inferred_ancestry.txt")
+  ances<-ancestry_file[,c(1,3,4)] #Take donors, continuous ancestry and categorical ancestry
   colnames(ances)<- c("SUBJID", "Ancestry", "Ancestry_cat")
   metadata_tot<-merge(metadata_tot, ances, by= "SUBJID")
   
   metadata_tot$Samples<-"RNA-Seq"
-  filter<-readRDS(paste0("Desktop/TFM/bsc83671/GTEx_v8/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
+  filter<-readRDS(paste0("X/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
   colnames(filter)[4]<-"SUBJID"
   filter$Samples<-"Images"
   filter<- merge(filter[,c("SUBJID", "Samples")], age_file[,c(2,5, 12)], by="SUBJID")
@@ -79,10 +79,6 @@ endo<-combined_df[combined_df$Tissue =="CervixEndocervix" & combined_df$Samples 
 ecto<-combined_df[combined_df$Tissue =="CervixEctocervix" & combined_df$Samples =="Images",]
 fall<-combined_df[combined_df$Tissue =="FallopianTube" & combined_df$Samples =="Images",]
 ecto<-combined_df[combined_df$Tissue =="CervixEctocervix" & combined_df$Samples =="Images",]
-
-table(endo$Ancestry_cat)
-table(ecto$Ancestry_cat)
-table(fall$Ancestry_cat)
 
 # combined_df %>%
 #   group_by(Organ) %>%
@@ -197,37 +193,21 @@ combined_plot <- grid.arrange(
   # Adjust relative width to make plots closer
 )
 
-pdf("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/fig1_A.pdf", width = 8, height = 5) 
+pdf("X/Figures/fig1_A.pdf", width = 8, height = 5) 
 grid.arrange(grobTree(combined_plot))
 dev.off()
 
-svg("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/fig1_A.svg", width = 8, height = 5, pointsize = 12)
-grid.arrange(grobTree(combined_plot))
-dev.off()
-
-pdf("Desktop/Figures//fig1_A.pdf", width = 8, height = 5) 
-grid.arrange(grobTree(combined_plot))
-dev.off()
-
-svg("Desktop/Figures/fig1_A.svg", width = 8, height = 5, pointsize = 12)
+svg("X/Figures/fig1_A.svg", width = 8, height = 5, pointsize = 12)
 grid.arrange(grobTree(combined_plot))
 dev.off()
 
 
 ###### 2H supp
-pdf("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/figS2_H.pdf", width = 8.5, height = 5) 
+pdf("X/Figures/figS2_H.pdf", width = 8.5, height = 5) 
 grid.arrange(grobTree(combined_plot))
 dev.off()
 
-svg("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/figS2_H.svg", width = 8.5, height = 5, pointsize = 12)
-grid.arrange(grobTree(combined_plot))
-dev.off()
-
-pdf("Desktop/Figures//figS2_H.pdf", width = 8.5, height = 5) 
-grid.arrange(grobTree(combined_plot))
-dev.off()
-
-svg("Desktop/Figures/figS2_H.svg", width = 8.5, height = 5, pointsize = 12)
+svg("XFigures/figS2_H.svg", width = 8.5, height = 5, pointsize = 12)
 grid.arrange(grobTree(combined_plot))
 dev.off()
 

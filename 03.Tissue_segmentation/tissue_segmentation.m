@@ -1,6 +1,6 @@
 
 %% Read the image
-img = imread("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/00.Data/Fem_tissues_images/Vagina/GTEX-ZAJG-2925.svs",1);
+img = imread("~/X/Laura/00.Data/Fem_tissues_images/Vagina/image.svs",1);
 disp(size(img));
 img = img(:, :, 1:3);
 %%
@@ -40,9 +40,9 @@ title('Combined Binary Mask');
 scaled_mask = imresize(mask, 0.5); % You can adjust the scaling factor as needed
 
 % Save the resized mask as a JPEG image
-imwrite(scaled_mask, '/home/lventura/Desktop/TFM/bsc83671/GTEx_v8/Laura/12.Tissues_substructures/Segmentation/FallopianTube/vessels/GTEX-NPJ7-1225.jpg');
+imwrite(scaled_mask, '/X/Laura/12.Tissues_substructures/Segmentation/FallopianTube/vessels/image.jpg');
 
 %% Overlay the mask on the original image
-imwrite(mask,'~/Desktop/TFM/bsc83671/GTEx_v8/Laura/12.Tissues_substructures/Segmentation/Uterus/endometrium/GTEX-1ICG6-1425.jpg');
+imwrite(mask,'~/X/Laura12.Tissues_substructures/Segmentation/Uterus/endometrium/image.jpg');
 
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-#' Differential Expression - Sliding Window ANalysis (DE-SWAN)
+#' Differential Expression - Sliding Window ANalysis
 
 Sys.setenv(TZ="Europe/Madrid")
 # ---------------------- #
@@ -10,7 +10,6 @@ start_time <- Sys.time()
 suppressMessages(library(edgeR))
 suppressMessages(library(limma))
 suppressMessages(library(dplyr))
-suppressMessages(library(DEswan))
 suppressMessages(library(ggplot2))
 suppressMessages(library(parallel))
 suppressMessages(library(dplyr))
@@ -23,19 +22,19 @@ suppressMessages(library(gplots))
 # Command line arguments ####
 args <- commandArgs(trailingOnly=TRUE)
 
-if (getwd()== "/X/Laura/DEswan" ){
+if (getwd()== "/X/Laura/sliding_window_DEA" ){
   input<-"/X/"
   args <- commandArgs(trailingOnly = TRUE)
   tissue<- args[1]
   sex<- args[2]
-  outpath<- paste0("/X/Laura/DEswan/All_tissues/", tissue, "/")
+  outpath<- paste0("/X/Laura/sliding_window_DEA/All_tissues/", tissue, "/")
   if(!dir.exists(outpath)){dir.create(outpath, recursive = T)}
   
 }else{
   input<-"/X//"
   tissue<-"Uterus"
   sex<- "female"
-  outpath<- paste0("/X//Laura/DEswan/All_tissues/", tissue, "/")
+  outpath<- paste0("/X//Laura/sliding_window_DEA/All_tissues/", tissue, "/")
   if(!dir.exists(outpath)){dir.create(outpath, recursive = T)}
   
 }
@@ -107,13 +106,6 @@ if (tissue %in% tissues_with_filter){
 counts <- counts_tot[, metadata$Sample]
 tpm<-tpm_tot[, metadata$Sample]
 
-# histo<-read.csv(paste0(input, "/Laura/13.Hybrid_probs/", tissue, "_hybrid_tile_probabilities_filtered_all_TILE.csv"))
-# histo<-histo[,c("Donor","old")]
-# colnames(histo)<-c("Donor", "Histo_age")
-# metadata<-merge(metadata, histo, by="Donor")
-# metadata$Age<-metadata$Histo_age
-# metadata$Histo_age<- NULL
-
 
 # Gene annotation ----
 
@@ -163,7 +155,7 @@ plot<-ggplot(df_counts, aes(x = factor(Window), y = Samples)) +
   labs(title = paste0("Samples per Test Window - ", tissue, " - ", sex), x = "Window Center (Age)", y = "Number of Samples") +
   theme_minimal()
 
-ggsave( paste0(outpath, "/DEswan_", tissue, "_", sex, "_", buckets.size, "_", interval.size, "_sampling.pdf"), plot = plot, width = 10, height = 6)
+ggsave( paste0(outpath, "/sliding_window_DEA_", tissue, "_", sex, "_", buckets.size, "_", interval.size, "_sampling.pdf"), plot = plot, width = 10, height = 6)
 
 #####################################
 # 4. Differential expression analysis ####
@@ -244,12 +236,12 @@ process_window <- function(k) {
 ncores <- detectCores() - 1  # Use all available cores except one
 results_list <- mclapply(seq_along(window.center), process_window, mc.cores = ncores)
 r<-results_list
-saveRDS(results_list, paste0(outpath,"/DEswan_", tissue, "_", sex,"_", buckets.size,"_", interval.size, "_results.rds"))
+saveRDS(results_list, paste0(outpath,"/sliding_window_DEA_", tissue, "_", sex,"_", buckets.size,"_", interval.size, "_results.rds"))
 
 tissue<-"Vagina"
-outpath<- paste0("/X//Laura/DEswan/All_tissues/", tissue, "/")
+outpath<- paste0("/X//Laura/sliding_window_DEA/All_tissues/", tissue, "/")
 
-r<- readRDS(paste0(outpath,"/DEswan_", tissue, "_", sex,"_", buckets.size,"_", interval.size, "_results.rds"))
+r<- readRDS(paste0(outpath,"/sliding_window_DEA_", tissue, "_", sex,"_", buckets.size,"_", interval.size, "_results.rds"))
 
 #Now plot the results
 pvals<-c("P.Value", "adj.P.Val")
@@ -310,7 +302,7 @@ toPlot <- t(res.signif)
 x <- as.numeric(colnames(toPlot))
 
 ### 4. Generate Plot
-pdf(paste0(input, "/Laura/DEswan/All_tissues/", tissue, "/curve_", tissue, "_", sex, "_", pval, "_", buckets.size, "_", interval.size, ".pdf"), width = 7, height = 7)
+pdf(paste0(input, "/Laura/sliding_window_DEA/All_tissues/", tissue, "/curve_", tissue, "_", sex, "_", pval, "_", buckets.size, "_", interval.size, ".pdf"), width = 7, height = 7)
 
 plot(1, type = "n", xlim = range(x, na.rm = TRUE), ylim = range(toPlot, na.rm = TRUE), 
      ylab = "# significant", xlab = "Age windows")
@@ -358,47 +350,11 @@ p <- ggplot(uterus_counts, aes(x = Window, y = Genes, group = Tissue, color = Ti
         panel.border = element_rect(color = "grey80", size = 0.5, fill = NA) # Add full border
   )
 p
-pdf(paste0(input, "/Laura/DEswan/All_tissues/curves_uterus_ovary_vagina_", pval, "_", threshold_interest, "_", buckets.size,"_", interval.size, "_normalized.pdf"), width = 4.5, height = 4.3)
+pdf(paste0(input, "/Laura/sliding_window_DEA/All_tissues/curves_uterus_ovary_vagina_", pval, "_", threshold_interest, "_", buckets.size,"_", interval.size, "_normalized.pdf"), width = 4.5, height = 4.3)
 print(p)
 dev.off()
 
-for(threshold_interest in thresholds){
-  df_counts <- data.table(Window = window.center, Samples = sample_counts)
-  df_counts$Genes <- res.signif[, threshold_interest]
-  df_counts$Genes_normalized<- df_counts$Genes/ df_counts$Samples
-  
-  ### 6. ggplot Optimization
-  
-  p <- ggplot(df_counts, aes(x = Window, y = Genes_normalized)) +
-    geom_line(color = "black", size = 1) +
-    geom_point(aes(color = Samples, size = Samples)) +
-    scale_color_gradient(low = "#FFFF6DFF", high = "#490092FF") +
-    scale_size(range = c(2, 6)) +
-    labs(title = paste(tissue, " - ", sex), x = "Window Center (Age)", y = paste0("#Significant Genes normalized (p<", threshold_interest,")"), color = "Number of Samples") +
-    theme_minimal() +
-    theme(plot.title = element_text(hjust = 0.5))
-  
-  pdf(paste0(input, "/Laura/DEswan/All_tissues/", tissue, "/curve_all_HISTO_", tissue, "_", sex, "_", pval, "_", threshold_interest, "_", buckets.size,"_", interval.size, "_normalized.pdf"), width = 7, height = 7)
-  print(p)
-  dev.off()
-  
-  p <- ggplot(df_counts, aes(x = Window, y = Genes)) +
-    geom_line(color = "black", size = 1) +
-    geom_point(aes(color = Samples, size = Samples)) +
-    scale_color_gradient(low = "#FFFF6DFF", high = "#490092FF") +
-    scale_size(range = c(2, 6)) +
-    labs(title = paste(tissue, " - ", sex), x = "Window Center (Age)", y = paste0("#Significant Genes (p<", threshold_interest,")"), color = "Number of Samples") +
-    theme_minimal() +
-    theme(plot.title = element_text(hjust = 0.5))
-  
-  pdf(paste0(input, "/Laura/DEswan/All_tissues/", tissue, "/curve_all_HISTO_", tissue, "_", sex, "_", pval, "_", threshold_interest, "_", buckets.size,"_", interval.size, ".pdf"), width = 7, height = 7)
-  print(p)
-  dev.off()
-}
-
-
-
-if(!getwd()== "/X/Laura/DEswan"){
+if(!getwd()== "/X/Laura/sliding_window_DEA"){
 
   # list_plots_adj<-list()
   tissue<- "Uterus"
@@ -411,12 +367,12 @@ if(!getwd()== "/X/Laura/DEswan"){
     }
   s<-"female"
   
-  r<-readRDS(paste0("/X//Laura/DEswan/All_tissues/", tissue, "/DEswan_", tissue, "_", s, "_results.rds"))
+  r<-readRDS(paste0("/X//Laura/sliding_window_DEA/All_tissues/", tissue, "/sliding_window_DEA_", tissue, "_", s, "_results.rds"))
   tissue<- "Uterus"
   
   buckets.size<- 20
   interval.size<-0
-  r<-readRDS(paste0("/X//Laura/DEswan/All_tissues/", tissue,"/DEswan_", tissue, "_", s,"_", buckets.size,"_", interval.size, "_results.rds"))
+  r<-readRDS(paste0("/X//Laura/sliding_window_DEA/All_tissues/", tissue,"/sliding_window_DEA_", tissue, "_", s,"_", buckets.size,"_", interval.size, "_results.rds"))
   
   window.center = seq(21,70,1)
   # window.center = seq(0,1,0.05)
@@ -445,9 +401,9 @@ if(!getwd()== "/X/Laura/DEswan"){
   significant_genes_list <- significant_genes_list[!sapply(significant_genes_list, is.null)]
   final_significant_genes <- unique(do.call(rbind, significant_genes_list))
   nrow(final_significant_genes)
-  # saveRDS(final_significant_genes, paste0("/X//Laura/DEswan/All_tissues/", tissue, "/GENES_DEswan_", tissue, "_", s,"_", buckets.size,"_", interval.size, "_results.rds" ))
+  # saveRDS(final_significant_genes, paste0("/X//Laura/sliding_window_DEA/All_tissues/", tissue, "/GENES_sliding_window_DEA_", tissue, "_", s,"_", buckets.size,"_", interval.size, "_results.rds" ))
 
-  nrow(readRDS(paste0("/X//Laura/DEswan/All_tissues/", tissue, "/GENES_DEswan_", tissue, "_", s,"_", buckets.size,"_", interval.size, "_results.rds" )))
+  nrow(readRDS(paste0("/X//Laura/sliding_window_DEA/All_tissues/", tissue, "/GENES_sliding_window_DEA_", tissue, "_", s,"_", buckets.size,"_", interval.size, "_results.rds" )))
   ### 2. Optimize P-value matrix generation
   all_windows <- seq_along(r)
   gene_list <- unique(unlist(lapply(r, rownames)))
@@ -536,14 +492,7 @@ if(!getwd()== "/X/Laura/DEswan"){
         metadata<-metadata_tot[metadata_tot$Sex == "2",]
     }
   }
-  # histo<-read.csv(paste0(input, "/Laura/13.Hybrid_probs/", tissue, "_hybrid_tile_probabilities_filtered_all_TILE.csv"))
-  # histo<-histo[,c("Donor","old")]
-  # colnames(histo)<-c("Donor", "Histo_age")
-  # metadata<-merge(metadata, histo, by="Donor")
-  # metadata$Age<-metadata$Histo_age
-  # metadata$Histo_age<- NULL
-  
-  
+
     z.score <- function(ft.matrix){
       t(scale(t(ft.matrix), center=TRUE, scale=TRUE))
     }
@@ -621,7 +570,7 @@ if(!getwd()== "/X/Laura/DEswan"){
     library(gplots)
     mycol <- gplots::colorpanel(n = length(pairs.breaks) - 1, low = "cyan", mid = "black", high = "yellow")
     # Plot the heatmap
-    pdf(paste0("/X//Laura/DEswan/All_tissues/",tissue,"/heatmap_", tissue, "_", sex, "_", buckets.size, "_", interval.size, "_adj_z-score.pdf"), width = 7, height = 6)
+    pdf(paste0("/X//Laura/sliding_window_DEA/All_tissues/",tissue,"/heatmap_", tissue, "_", sex, "_", buckets.size, "_", interval.size, "_adj_z-score.pdf"), width = 7, height = 6)
     
     heatmap.2(
       z_scores_matrix,
@@ -648,7 +597,7 @@ if(!getwd()== "/X/Laura/DEswan"){
     
     dev.off()
     
-    pdf(paste0(input, "/Laura/DEswan/All_tissues/", tissue, "/", buckets.size, "_",interval.size, "_adj_zscore_legend_plot.pdf"), width = 3, height = 2)  # Save as PNG (adjust size)
+    pdf(paste0(input, "/Laura/sliding_window_DEA/All_tissues/", tissue, "/", buckets.size, "_",interval.size, "_adj_zscore_legend_plot.pdf"), width = 3, height = 2)  # Save as PNG (adjust size)
     library(gplots)
     
     mycol <- colorpanel(n = 100, low = "cyan", mid = "black", high = "yellow")
@@ -703,8 +652,9 @@ if(!getwd()== "/X/Laura/DEswan"){
     all_windows<-all_windows[all_windows$gene %in% final_significant_genes$gene.name.x,]
     max(all_windows$heatmap_value)
     min(all_windows$heatmap_value)
-    min<--4
-    max<-4
+    min<-min(all_windows$heatmap_value)
+    max<-max(all_windows$heatmap_value)
+
     # Spread the data into a wide format
     heatmap_matrix <- all_windows %>%
       pivot_wider(names_from = window.center, values_from = heatmap_value) %>%
@@ -723,7 +673,7 @@ if(!getwd()== "/X/Laura/DEswan"){
                                         colnames(heatmap_matrix), "")
     
     
-    pdf(paste0(input, "/Laura/DEswan/All_tissues/", tissue, "/heatmap_", tissue, "_", sex, "_", buckets.size, "_", interval.size, "_adj_pval.pdf"), width = 30, height = 20)  # Adjust width and height as needed
+    pdf(paste0(input, "/Laura/sliding_window_DEA/All_tissues/", tissue, "/heatmap_", tissue, "_", sex, "_", buckets.size, "_", interval.size, "_adj_pval.pdf"), width = 30, height = 20)  # Adjust width and height as needed
     par(mar = c(5, 5, 2, 2))  # Adjust margins (bottom, left, top, right)
     heatmap.2(as.matrix(heatmap_matrix),
               cexRow = 0.7, cexCol = 3,  # Adjust font sizes
@@ -743,7 +693,7 @@ if(!getwd()== "/X/Laura/DEswan"){
               srtCol = 0) 
     dev.off()
 
-    pdf(paste0(input, "/Laura/DEswan/All_tissues/", tissue, "/", buckets.size, "_", interval.size, "_adj_pval_legend_plot.pdf"), width = 3, height = 2)  # Save as PNG (adjust size)
+    pdf(paste0(input, "/Laura/sliding_window_DEA/All_tissues/", tissue, "/", buckets.size, "_", interval.size, "_adj_pval_legend_plot.pdf"), width = 3, height = 2)  # Save as PNG (adjust size)
     library(gplots)
     
     mycol <- colorpanel(n = 100, low = "cyan", mid = "black", high = "yellow")
@@ -758,109 +708,4 @@ if(!getwd()== "/X/Laura/DEswan"){
     dev.off()
     
     
-    
-    #####HIERARCHICAL CLUSTERING
-    
-    # Extract the row dendrogram
-    heatmap_output<-heatmap.2(as.matrix(heatmap_matrix),
-              cexRow = 0.7, cexCol = 3,  # Adjust font sizes
-              trace = "none",  # No trace lines
-              dendrogram = "row",  # Cluster rows (genes)
-              breaks = pairs.breaks, 
-              col = mycol, 
-              Rowv = TRUE,  # Cluster rows
-              Colv = FALSE, # Do not cluster columns (ages stay in order)
-              lhei = c(0.2, 10), 
-              lwid = c(0.2, 3),
-              key = TRUE,  # Display legend
-              labRow = NA,  # Removes row names
-              notecex = 0,  # Ensure no annotations appear
-              sepcolor = NA,  # Disable border color
-              sepwidth = c(0, 0),
-              srtCol = 0) 
-    
-    
-    
-
-    gene_expression_matrix <- heatmap_matrix # Replace with your data
-    
-    # Step 1: Compute pairwise distances
-    distance_matrix <- dist(gene_expression_matrix, method="euclidean")  # Use "correlation" or other metrics
-    
-    # Step 2: Perform hierarchical clustering
-    hc <- hclust(distance_matrix, method="complete")  # Use "average", "complete", etc.
-    
-    # Step 3: Plot the dendrogram
-    plot(hc, main="Hierarchical Clustering Dendrogram", xlab="Genes", ylab="Distance")
-    
-    hc$dist.method
-    
-    # Cut the dendrogram to obtain clusters
-    num_clusters <- 4  # Specify the number of clusters
-    clusters <- cutree(hc, k = num_clusters)
-    
-    clusters<- as.data.frame(clusters)
-    clusters$Gene<-rownames(clusters)
-    c1<-clusters[clusters$clusters== "1", "Gene"]
-    c2<-clusters[clusters$clusters== "2", "Gene"]
-    c3<-clusters[clusters$clusters== "3", "Gene"]
-    c4<-clusters[clusters$clusters== "4", "Gene"]
-    
-    read.csv(paste0(input, "/Allal/Differential_expression/significant_features_0.05.csv"))
-    
-    l<-list()
-    tis<-c("Uterus", "Ovary", "Vagina", "BreastMammaryTissue", "Endocervix", "Ectocervix", "FallopianTube")
-    
-    for (tissue in tis){
-      
-      if(tissue =="BreastMammaryTissue"){
-        cell_prop<-read.csv(paste0("~//X//Laura/derived_proportions_Craig/", tissue, "/", tissue, "_pivot.csv"))
-        substructures<- c("adipocyte", "lobule", "duct", "stroma", "nerve", "gynecomastoid_hyperplasia")
-  
-      }else if(tissue == "Ovary"){
-        cell_prop<-read.csv(paste0("~//X//Laura/12.Tissues_substructures/", tissue, "_no_follicles_pivot.csv"))
-        substructures<- c("cortex", "corpora", "medulla", "vessels")
-        
-      }else if (tissue =="Vagina"){
-        cell_prop<-read.csv(paste0("~//X//Laura/12.Tissues_substructures/", tissue, "_pivot.csv"))
-        substructures<- c("epithelium", "lamina_propria", "vessels", "stroma")
-        
-      }else if (tissue =="Uterus"){
-        cell_prop<-read.csv(paste0("~//X//Laura/12.Tissues_substructures/", tissue, "_pivot.csv"))
-        substructures<- c("myometrium", "endometrium", "vessels")
-  
-  
-      }else if (tissue =="Endocervix"){
-        cell_prop<-read.csv(paste0("~//X//Laura/12.Tissues_substructures/Endocervix_pivot.csv"))
-         substructures<- c("vessels", "glandular_epithelium", "stroma")
-        
-      }else if (tissue =="Ectocervix"){
-        cell_prop<-read.csv(paste0("~//X//Laura/12.Tissues_substructures/Ectocervix_pivot.csv"))
-         substructures<- c("epithelium", "stroma", "vessels", "glands")
-      
-        
-      }else if (tissue == "FallopianTube"){
-        cell_prop<-read.csv(paste0("~//X//Laura/12.Tissues_substructures/FallopianTube_pivot.csv"))
-        substructures<- c("vessels", "lumen", "smooth_muscle", "epithelium", "stroma") ##always control for adipose, since it is contamination
-        
-      }
-      
-      for (sub in substructures){
-        t<-readRDS(paste0("/X//Allal/Differential_expression/variance_partition/results/mean_tiles/", tissue, "/", sub, ".rds"))
-        number<- nrow(t[t$age>0.05,])/383
-        l[[tissue]][[sub]]<-number
-      }
-       # l[[tissue]][["mean"]]<- mean(unlist(l[[tissue]]))
-        
-    }
-    mean(unlist(l))
-    
-   t<-readRDS("/X//Allal/Differential_expression/variance_partition/results/mean_tiles/Uterus/myometrium_summary.rds")
-  # t<-readRDS("/X//Allal/Differential_expression/variance_partition/results/mean_tiles/BreastMammaryTissue/adipocyte_summary.rds")
-  #
-   t
 }
-268/383
-
-m<-read.csv("/X//Allal/Differential_expression/significant_features_0.05.csv")[1:16,2:3]
-mean(m$significant_features)

@@ -50,19 +50,12 @@ cnn<-ggplot(acc_top1, aes(x = Tissue_offset, y = Acc, fill = "black", alpha = Me
     # alpha = guide_legend(override.aes = list(shape = 14, size = 4)) # Ensures alpha doesn't show 'A'
   )
 cnn
-pdf("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/figS2_A.pdf", width = 5.5, height = 5) 
+
+pdf("X/Figures//figS2_A.pdf", width = 5.5, height = 5) 
 cnn
 dev.off()
 
-svg("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/figS2_A.svg", width = 5.5, height = 5, pointsize = 12)
-cnn
-dev.off()
-
-pdf("Desktop/Figures//figS2_A.pdf", width = 5.5, height = 5) 
-cnn
-dev.off()
-
-svg("Desktop/Figures/figS2_A.svg", width = 5.5, height = 5, pointsize = 12)
+svg("X/Figures/figS2_A.svg", width = 5.5, height = 5, pointsize = 12)
 cnn
 dev.off()
 

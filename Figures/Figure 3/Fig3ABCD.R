@@ -8,6 +8,7 @@ library(dplyr)
 library(tidyr)
 library(stats)
 
+input<-"X"
 
 # Option 1: Maximum slope using LOESS
 find_max_slope_point_loess <- function(age, measurement, span = 0.75) {
@@ -190,7 +191,6 @@ library(ggplot2)
 library(ggsignif)
 library(gridExtra)
 
-input<-"Desktop/TFM/bsc83671/GTEx_v8/"
 measures <- read.csv(paste0(input, "/Allal/CellProfiler/results/Vagina/newSecondaryFilteredVagina_Image.csv"))
 median_value_columns <- c("FileName_Vagina","Median_FilterObjects_AreaShape_MinorAxisLength", "Median_FilterObjects_AreaShape_MinorAxisLength", "Median_FilterObjects_AreaShape_MinorAxisLength")
 image_median_values <- measures[,median_value_columns]
@@ -202,7 +202,7 @@ image_median_values$FileName_Vagina <- sub("_binary_mask_class_epithelium_compre
 image_median_values$FileName_Vagina <- sub("^([^-]+-[^-]+)-.*$", "\\1", image_median_values$FileName_Vagina)
 
 tissue<- "Vagina"
-metadata<-read.csv("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/00.Data/GTEx_Subject_Phenotypes.GRU.csv", sep="\t", header=TRUE)
+metadata<-read.csv("~/X/Laura/00.Data/GTEx_Subject_Phenotypes.GRU.csv", sep="\t", header=TRUE)
 
 filter<-readRDS(paste0(input,"/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
 
@@ -534,7 +534,7 @@ p2 <- ggplot(measures_filtered, aes(x = decade_bins, y = Median_FilterObjects_Ar
 
 fig3<-trajectories+p2
 
-pdf("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/Fig3ABCD.pdf", width = 12.2, height = 5.3) 
+pdf("X/Laura/Figure_plots/Fig3ABCD.pdf", width = 12.2, height = 5.3) 
 fig3
 dev.off()
 

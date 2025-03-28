@@ -1,8 +1,9 @@
 library(ggplot2)
 
 balanced_accuracy_all = c()
-prfx<-"Desktop/TFM/bsc83671/GTEx_v8/"
+prfx<-"X/"
 
+#Read accuracies
 tissue_list = c("Ovary", "Uterus", "Vagina", "BreastMammaryTissue")
 for (tissue in tissue_list[1:4]){
   balanced_accuracy = read.csv(paste0(prfx, "Ole/RNApath/NewestVal/", tissue,"/BalSampling_new_balanced_accuracy_1000_intuned10cv10_realmean_enetCVdonor.csv"))
@@ -64,12 +65,7 @@ p<-ggplot(df_long, aes(x = position, y = accuracy, color = tissue, alpha = accur
         axis.line.y = element_line(size = 0.5, color = "grey80"),
         panel.border = element_rect(color = "grey80", size = 0.5, fill = NA) )
 
-pdf("Desktop/Figures/Fig3S_A.pdf", width = 6.5, height = 4.5) 
-p
-dev.off()
-
-
-pdf("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/Fig3S_A.pdf", width = 6, height = 6) 
+pdf("X/Figures/Fig3S_A.pdf", width = 6.5, height = 4.5) 
 p
 dev.off()
 

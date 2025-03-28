@@ -9,16 +9,22 @@ library(limma)
 library(ggplot2)
 library(edgeR)
 library(readxl)
-input<-"Desktop/TFM/bsc83671/GTEx_v8/"
+
+
+input<-"X/"
 options<- c("all_donors", "only_matching_donors")
 option<-options[2]
 tissue<-"Ovary"
-# MOFAobject_trained<-readRDS(paste0(input, "/Laura/MOFA/MOFA_", tissue, "_",option,"_","10_ensg_peer2.rds"))
+
+#Read MOFA results
 MOFAobject_trained<-readRDS(paste0(input, "/Laura/MOFA/MOFA_", tissue, "_",option,"_","10_ensg_CORRECTED.rds"))
 
+#Read and filter metadata
 metadata_tot <- readRDS(paste0(input, "/Laura/00.Data/v10/", tissue, "/metadata.rds"))
 filter<-readRDS(paste0(input, "/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
 metadata_tot$Ancestry<- NULL
+
+#Add continuous ancestry
 ancestry_file<- read.table(paste0(input,"/Laura/00.Data/admixture_inferred_ancestry.txt"))
 ances<-ancestry_file[,c(1,3)]
 colnames(ances)<- c("Donor", "Ancestry")
@@ -27,14 +33,7 @@ metadata<- metadata_tot[metadata_tot$Donor %in% filter$Subject.ID,]
 metadata$Age_bins <- ifelse(metadata$Age<=35, "young",
                             ifelse(metadata$Age>35 & metadata$Age<60, "middle", "old"))
 metadata$Age_bins<-as.factor(metadata$Age_bins)
-###Add histological age
-histo<-read.csv(paste0("Desktop/TFM/bsc83671/GTEx_v8/Laura/13.Hybrid_probs/", tissue, "_hybrid_tile_probabilities_filtered_all_TILE.csv"))
-histo<-histo[,c("Donor","old")]
-colnames(histo)<-c("Donor", "Histo_age")
-metadata<-merge(metadata, histo, by="Donor")
-histo<-histo[histo$Donor %in% metadata$Donor,]
-rownames(histo)<-histo$Donor
-histo$Donor<-NULL
+
 metadata_MOFA<-metadata
 colnames(metadata_MOFA)[1]<-"sample"
 metadata_MOFA<- metadata_MOFA[metadata_MOFA$sample %in% colnames(MOFAobject_trained@data[[1]]$group1),]
@@ -44,26 +43,26 @@ ordered_metadata <- metadata_MOFA[order(metadata_MOFA$Age), ]
 samples_metadata(MOFAobject_trained) <- metadata_MOFA
 variance<-get_variance_explained(MOFAobject_trained)
 
+#Obtain r vaues for the correlations with age
 p<-correlate_factors_with_covariates(MOFAobject_trained, 
                                      covariates = c("Age"), 
-                                     #covariates = colnames(metadata_MOFA_nonas), 
                                      plot="r",
                                      return_data = TRUE)
 p<-as.data.frame(p)
+
+#Obtain log(adj. p-values) of the correlations 
 p_log<-correlate_factors_with_covariates(MOFAobject_trained, 
                                      covariates = c("Age"), 
-                                     #covariates = colnames(metadata_MOFA_nonas), 
                                      plot="log_pval",
                                      return_data = TRUE)
 p_log<-as.data.frame(p_log)
-tissue
 p$log<-10^(-p_log$Age)
 p$as<-ifelse(p$log<0.05 & p$log>0.005, "*", 
              ifelse(p$log<0.005 & p$log>0.0005, "**",
                     ifelse(p$log<0.0005, "***", "")))
 p2<-plot_variance_explained(MOFAobject_trained, max_r2=max(variance$r2_per_factor$group1))
 p3<-plot_variance_explained(MOFAobject_trained, plot_total = T)[[2]]
-p2$data
+
 #######################
 library(pheatmap)
 library(RColorBrewer)
@@ -104,10 +103,9 @@ ht<-Heatmap(p,
             ),# Set horizontal legend
 )
 draw(ht, heatmap_legend_side = "right")
-################33
 
-#################333
-heatmap_data <- p2$data  # Your original data frame with factor, view, and value
+#################
+heatmap_data <- p2$data  
 
 # Reshape the data with 'factor' as rows and 'view' as columns
 heatmap_data<-heatmap_data[,1:3]
@@ -120,8 +118,8 @@ rownames(heatmap_matrix) <- heatmap_matrix$factor
 
 # Remove the 'factor' column as it's now the row names
 heatmap_matrix <- heatmap_matrix[, -1]
-tissue
 heatmap_matrix<-t(heatmap_matrix)
+
 # Plot the heatmap
 library(ComplexHeatmap)
 library(circlize)
@@ -175,27 +173,15 @@ ht_list <- ht %v% ht2  # Merge them vertically
 
 # Render the combined heatmap
 draw(ht_list, heatmap_legend_side = "right", merge_legend = TRUE)
-
-pdf(paste0("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/MOFA_", tissue,"_heatmapCORRECTED.pdf"), width = 8, height = 5)  # Adjust width and height as needed
-draw(ht_list, heatmap_legend_side = "right", merge_legend = TRUE)
-dev.off()
-pdf(paste0("~/Desktop/Figures/MOFA_", tissue, "_heatmap_CORRECTED.pdf"), width = 8, height = 5)  # Adjust width and height as needed
+pdf(paste0("~/X/Figures/MOFA_", tissue, "_heatmap_CORRECTED.pdf"), width = 8, height = 5)  # Adjust width and height as needed
 draw(ht_list, heatmap_legend_side = "right", merge_legend = TRUE)
 dev.off()
 
-pdf("Desktop/Figures/fig3S_B.pdf", width = 8, height = 5) 
+pdf("X/Figures/fig3S_B.pdf", width = 8, height = 5) 
 draw(ht_list, heatmap_legend_side = "right", merge_legend = TRUE)
 dev.off()
 
-svg("Desktop/Figures/fig3S_B.svg", width = 7.5, height = 5, pointsize = 12)
-draw(ht_list, heatmap_legend_side = "right", merge_legend = TRUE)
-dev.off()
-
-pdf("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/fig3S_B.pdf", width = 7.5, height = 5) 
-draw(ht_list, heatmap_legend_side = "right", merge_legend = TRUE)
-dev.off()
-
-svg("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/fig3S_B.svg", width = 7.5, height = 5, pointsize = 12)
+svg("X/Figures/fig3S_B.svg", width = 7.5, height = 5, pointsize = 12)
 draw(ht_list, heatmap_legend_side = "right", merge_legend = TRUE)
 dev.off()
 
@@ -209,8 +195,8 @@ library(clusterProfiler)
 library(org.Hs.eg.db)
 library(ReactomePA)
 
-#################for go
-gene_annotation  <- read.csv("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/00.Data/gencode.v39.annotation.bed")
+#################for GO database
+gene_annotation  <- read.csv("~/X/Laura/00.Data/gencode.v39.annotation.bed")
 
 # Retrieve entrez id
 entrez.id <- idMapping(organism = "hsapiens",
@@ -225,17 +211,17 @@ gene_annotation$entrez.id <- sapply(sub("\\..*", "", gene_annotation$ensembl.id)
          NA)
 )
 tissue<-"Ovary"
-# MOFAobject_trained<-readRDS(paste0(input, "/Laura/MOFA/MOFA_", tissue, "_",option,"_","10_ensg_peer2.rds"))
 MOFAobject_trained<-readRDS(paste0(input, "/Laura/MOFA/MOFA_", tissue, "_",option,"_","10_ensg_CORRECTED.rds"))
 
+#Obtain the weights for the factor of interst for our genes
 p<-plot_top_weights(MOFAobject_trained,
                     view = "gene_expression",
-                    #view = "medulla",
                     factor = 7,
                     nfeatures = 5000,     # Top number of features to highlight
                     scale = T           # Scale weights from -1 to 1
 )
-d
+
+
 degs_scores<-p$data[,c("feature","value", "sign")]
 degs_scores$value <- ifelse(degs_scores$sign == "-", -degs_scores$value, degs_scores$value)
 degs_scores$sign <- NULL
@@ -243,7 +229,7 @@ gene_info<- gene_annotation[sub("\\..*", "", gene_annotation$ensembl.id) %in% de
 gene_info$ensembl.id<-sub("\\..*", "", gene_info$ensembl.id)
 degs_scores<- merge(gene_info, degs_scores, by.x= "ensembl.id", by.y="feature")
 degs_scores<- degs_scores[order(degs_scores$value, decreasing= TRUE),]
-min(degs_scores$value)
+
 n<-gene_annotation[gene_annotation$gene.name.x %in% degs_scores$gene.name.x, c("gene.name.x", "entrez.id")]
 degs<-merge(degs_scores, n, by= "gene.name.x")
 degs<- degs[order(degs$value, decreasing = TRUE),]
@@ -290,12 +276,11 @@ r_down$Description <- ifelse(r_down$Description %in% bold_terms,
 #
 library(ggtext)
 library(gridExtra)
-# Or alternatively
 library(patchwork)
 library(stringr)
 library(cowplot)
 
-###Uterus filtering
+#PLOT
 plot_enrich <- ggplot(r_t, aes(x = NES, y = reorder(Description, NES), color = p.adjust)) +
   geom_point(size=4) +
   scale_color_gradient(low = "#8B0000", high = "#63B8FF") +
@@ -318,15 +303,8 @@ plot_enrich <- ggplot(r_t, aes(x = NES, y = reorder(Description, NES), color = p
 
 factor6<-plot_enrich
 plot_enrich<-factor6
-pdf("Desktop/Figures/enrichmentovary_factor7_all.pdf", width = 5.5, height = 6) 
+pdf("X/Figures/enrichmentovary_factor7_all.pdf", width = 5.5, height = 6) 
 plot_enrich
 dev.off()
 
-pdf("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/enrichmentovary_factor7.pdf", width = 6, height = 6) 
-plot_enrich
-dev.off()
-
-svg("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/enrichmentovary_factor7.svg", width = 6, height = 6, pointsize = 12)
-plot_enrich
-dev.off()
 

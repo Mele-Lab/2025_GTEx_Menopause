@@ -1,10 +1,10 @@
-.libPaths(c("/gpfs/home/bsc/bsc110937/Rlibs", .libPaths()))
+.libPaths(c("/x/Rlibs", .libPaths()))
 library(ggplot2)
 library(dplyr)
 library(reshape)
 library(yaml)
 library(tidyr)
-input<-"Desktop/TFM/bsc83671/GTEx_v8/"
+input<-"X/"
 tissues <- c("Vagina", "Uterus", "Ovary", "Endocervix", "Ectocervix", "FallopianTube", "BreastMammaryTissue")
 
 yaml_file <-paste0(input, "/Allal/RNAPath/resources/clusters.yaml")
@@ -240,7 +240,7 @@ p <- ggplot(final_df_long, aes(x = proportion, y = subtissue, fill = main_tissue
 p <- p + theme(axis.text.y = element_text(face = ifelse(levels(final_df_long$subtissue) %in% bold_subtissues, "bold", "plain")))
 
 # Save plot
-svg("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/Violin_plot_vp.svg",  width = 6.5, height = 6)
+svg("~/X/Laura/Figure_plots/Violin_plot_vp.svg",  width = 6.5, height = 6)
 p
 dev.off()
 
@@ -282,7 +282,7 @@ p <- ggplot(final_df_long, aes(x = proportion, y = subtissue, fill = main_tissue
 p <- p + theme(axis.text.y = element_text(face = ifelse(levels(final_df_long$subtissue) %in% bold_subtissues, "bold", "plain")))
 
 # Save plot
-ggsave(p, file = "~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/Violin_plot_vp.svg", device = "svg", width = 8, height = 7.5)
+ggsave(p, file = "~/X/Laura/Figure_plots/Violin_plot_vp.svg", device = "svg", width = 8, height = 7.5)
 
 # Create the plot without legend
 p2 <- ggplot(final_df_long, aes(x = proportion, y = subtissue, fill = main_tissue, alpha = alpha_value)) +
@@ -306,29 +306,21 @@ p2 <- ggplot(final_df_long, aes(x = proportion, y = subtissue, fill = main_tissu
 p2 <- p2 + theme(axis.text.y = element_text(face = ifelse(levels(final_df_long$subtissue) %in% bold_subtissues, "bold", "plain")))
 
 # Save plot
-ggsave(p2, file = "~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/Violin_plot_vp.svg", device = "svg", width = 6, height = 7)
+ggsave(p2, file = "X/Laura/Figure_plots/Violin_plot_vp.svg", device = "svg", width = 6, height = 7)
 
-pdf("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/Violin_plot_vp.pdf", width = 6, height = 8)  # Adjust width and height as needed
+
+pdf("~/X/Figures/Fig2C.pdf", width = 6, height = 8)  # Adjust width and height as needed
 #grid.arrange(grobTree(heatmaptot), grobTree(heat), ncol = 2, widths = c(0.7, 0.3))
 p2
 dev.off()
 
-svg("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/Violin_plot_vp.svg",  width = 8, height = 8)
-p2
-dev.off()
-
-pdf("~/Desktop/Figures/Fig2D.pdf", width = 6, height = 8)  # Adjust width and height as needed
-#grid.arrange(grobTree(heatmaptot), grobTree(heat), ncol = 2, widths = c(0.7, 0.3))
-p2
-dev.off()
-
-svg("~/Desktop/Figures/Fig2D.svg",  width = 6, height = 8)
+svg("~/X/Figures/Fig2C.svg",  width = 6, height = 8)
 p2
 dev.off()
 
 
 #######ADD FEATURES TRAJECTORIES
-input<-"Desktop/TFM/bsc83671/GTEx_v8/"
+input<-"X/"
 
 library("MOFA2")
 library("MOFAdata")
@@ -341,7 +333,7 @@ library(edgeR)
 library(readxl)
 tissue<-"Uterus"
 
-m<-readRDS("Desktop/TFM/bsc83671/GTEx_v8/Allal/Differential_expression/variance_partition/results/mean_tiles/Uterus/myometrium.rds")
+m<-readRDS("X/Allal/Differential_expression/variance_partition/results/mean_tiles/Uterus/myometrium.rds")
 max_feat_myo<-rownames(m[order(m$age, decreasing = TRUE),])[1]
 
 MOFAobject_trained<-readRDS(paste0(input, "/Laura/MOFA/MOFA_", tissue, "_",option,"_","10_ensg_endocorrected.rds"))
@@ -375,7 +367,7 @@ data <- get_data(MOFAobject_trained,
 
 data_with_age<-merge(data, metadata_MOFA[,c("sample","Age", "Ancestry", "BMI")], by= "sample")
 d<-data_with_age[data_with_age$feature=="346_myometrium",]
-filter<-readRDS(paste0("Desktop/TFM/bsc83671/GTEx_v8/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
+filter<-readRDS(paste0("X/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
 d<-d[d$sample %in% filter$Subject.ID,]
 d<-d[order(d$value, decreasing=TRUE),]
 d_max<-d[d$value==max(d$value), ]
@@ -387,7 +379,7 @@ head(d)
 tail(d)
 
 tissue<-"Vagina"
-m<-readRDS("Desktop/TFM/bsc83671/GTEx_v8/Allal/Differential_expression/variance_partition/results/mean_tiles/Vagina/epithelium.rds")
+m<-readRDS("X/Allal/Differential_expression/variance_partition/results/mean_tiles/Vagina/epithelium.rds")
 max_feat_epi<-rownames(m[order(m$age, decreasing = TRUE),])[1]
 
 MOFAobject_trained<-readRDS(paste0(input, "/Laura/MOFA/MOFA_", tissue, "_",option,"_","10_ensg_peer2.rds"))
@@ -425,7 +417,7 @@ data <- get_data(MOFAobject_trained,
 
 data_with_age<-merge(data, metadata_MOFA[,c("sample","Age", "Ancestry", "BMI")], by= "sample")
 d<-data_with_age[data_with_age$feature=="313_epithelium",]#For age
-filter<-readRDS(paste0("Desktop/TFM/bsc83671/GTEx_v8/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
+filter<-readRDS(paste0("X/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
 d<-d[d$sample %in% filter$Subject.ID,]
 d<-d[order(d$value, decreasing = TRUE),]
 d_max<-d[d$value==max(d$value), ]
@@ -454,21 +446,11 @@ f<-ggplot(total, aes(x = Age, y = value, color = view, group = "view")) +
 # 
 dev.off()
 
-
-pdf("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/Features_m_e.pdf", width = 3.5, height = 8)  # Adjust width and height as needed
+pdf("~/X/Figures/Fig2C_2.pdf", width = 3.5, height = 8)  # Adjust width and height as needed
 #grid.arrange(grobTree(heatmaptot), grobTree(heat), ncol = 2, widths = c(0.7, 0.3))
 f
 dev.off()
 
-svg("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/Features_m_e.svg",  width = 3.5, height = 8)
-f
-dev.off()
-
-pdf("~/Desktop/Figures/Fig2D_2.pdf", width = 3.5, height = 8)  # Adjust width and height as needed
-#grid.arrange(grobTree(heatmaptot), grobTree(heat), ncol = 2, widths = c(0.7, 0.3))
-f
-dev.off()
-
-svg("~/Desktop/Figures/Fig2D_2.svg",  width = 3.5, height = 8)
+svg("~/X/Figures/Fig2C_2.svg",  width = 3.5, height = 8)
 f
 dev.off()
