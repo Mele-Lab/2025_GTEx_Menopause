@@ -15,14 +15,17 @@ tissue_colors <- c(
   "Ectocervix" = "#FFB6DBFF",
   "FallopianTube" = "#DB6D00FF"
 )
-input<- "Desktop/TFM/bsc83671/GTEx_v8/"
+input<- "X/"
 tissue<-"Vagina"
-m<-readRDS("Desktop/TFM/bsc83671/GTEx_v8/Allal/Differential_expression/old_varpar/variance_partition/results/mean_tiles/Vagina/epithelium.rds")
+
+#Read variance partition results
+m<-readRDS("X/Allal/Differential_expression/old_varpar/variance_partition/results/mean_tiles/Vagina/epithelium.rds")
 max_feat_epi<-rownames(m[order(m$age, decreasing = TRUE),])[1]
+
+#Read MOFA Object only to take the feature values needed
 MOFAobject_trained<-readRDS(paste0(input, "/Laura/MOFA/MOFA_", tissue, "_only_matching_donors_10_ensg_CORRECTED.rds"))
 metadata_tot <- readRDS(paste0(input, "/Laura/00.Data/v10/", tissue, "/metadata.rds"))
 filter<-readRDS(paste0(input, "/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
-
 
 #For using continuous ancestry as a covariate (otherwise we use it as a categorical variable)
 metadata_tot$Ancestry<- NULL
@@ -31,22 +34,14 @@ ances<-ancestry_file[,c(1,3)]
 colnames(ances)<- c("Donor", "Ancestry")
 metadata_tot<-merge(metadata_tot, ances, by= "Donor")
 metadata<- metadata_tot[metadata_tot$Donor %in% filter$Subject.ID,]
-metadata$Age_bins <- ifelse(metadata$Age<=35, "young",
-                            ifelse(metadata$Age>35 & metadata$Age<60, "middle", "old"))
-metadata$Age_bins<-as.factor(metadata$Age_bins)
-###Ancestry bins
-# metadata$Ancestry_bins <-cut(metadata$Ancestry, 
-#                              breaks = 3, 
-#                              labels = c("Low", "Medium","High"),
-#                              include.lowest = TRUE)
-# metadata$Ancestry_bins<-as.factor(metadata$Ancestry_bins)
-
 metadata_MOFA<-metadata
 colnames(metadata_MOFA)[1]<-"sample"
 metadata_MOFA<- metadata_MOFA[metadata_MOFA$sample %in% colnames(MOFAobject_trained@data[[1]]$group1),]
 metadata_MOFA$Sample<-NULL
 ordered_metadata <- metadata_MOFA[order(metadata_MOFA$Age), ]
 samples_metadata(MOFAobject_trained) <- metadata_MOFA
+
+#Select the view we need
 data <- get_data(MOFAobject_trained, 
                  views = "epithelium", 
                  as.data.frame = TRUE
@@ -58,8 +53,10 @@ feature_ancestry<-"213_epithelium"
 feature_age<-"313_epithelium"
 
 d<-data_with_age[data_with_age$feature=="213_epithelium",]
-filter<-readRDS(paste0("Desktop/TFM/bsc83671/GTEx_v8/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
+filter<-readRDS(paste0("X/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
 d<-d[d$sample %in% filter$Subject.ID,]
+
+#Order by feature value and select max and mins
 d<-d[order(d$value, decreasing = TRUE),]
 d_max<-d[d$value==max(d$value), ]
 d_min<-d[d$value==min(d$value), ]
@@ -69,8 +66,12 @@ tail(epithelium)
 
 
 tissue<-"BreastMammaryTissue"
-m<-readRDS("Desktop/TFM/bsc83671/GTEx_v8/Allal/Differential_expression/variance_partition/results/mean_tiles/BreastMammaryTissue/adipocyte.rds")
+
+#Read variance partition results
+m<-readRDS("X/Allal/Differential_expression/variance_partition/results/mean_tiles/BreastMammaryTissue/adipocyte.rds")
 max_feat_cortex<-rownames(m[order(m$bmi, decreasing = TRUE),])[1]
+
+#Read MOFA Object only to take the feature values needed
 MOFAobject_trained<-readRDS(paste0(input, "/Laura/MOFA/MOFA_", tissue, "_only_matching_donors_10_ensg_CORRECTED.rds"))
 metadata_tot <- readRDS(paste0(input, "/Laura/00.Data/v10/", tissue, "/metadata.rds"))
 filter<-readRDS(paste0(input, "/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
@@ -111,8 +112,10 @@ data <- get_data(MOFAobject_trained,
 nrow(data)
 data_with_age<-merge(data, metadata_MOFA[,c("sample","Age", "Ancestry", "BMI")], by= "sample")
 d<-data_with_age[data_with_age$feature=="90_adipocyte",]
-filter<-readRDS(paste0("Desktop/TFM/bsc83671/GTEx_v8/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
+filter<-readRDS(paste0("X/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
 d<-d[d$sample %in% filter$Subject.ID,]
+
+#Order by feature value and select max and mins
 d_max<-d[d$value==max(d$value), ]
 d_min<-d[d$value==min(d$value), ]
 d<-d[order(d$value, decreasing= FALSE),]
@@ -191,13 +194,6 @@ ej_features <- (epi + theme(plot.margin = margin(2, 2, 2, 2))) +
 ej_features
 # Print the plot
 
-pdf("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/Features_BMI_ancestry.pdf", width = 3.5, height = 7.5)  # Adjust width and height as needed
-ej_features
-dev.off()
-
-svg("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/Features_m_e.svg",  width = 3.5, height = 7.5)
-ej_features
-dev.off()
 
 pdf("~/Desktop/Figures/Fig2E.pdf", width = 3.5, height = 7.5)  # Adjust width and height as needed
 ej_features
@@ -208,19 +204,15 @@ ej_features
 dev.off()
 
 
-
-
-
-
-
-
-
-
-
-input<- "Desktop/TFM/bsc83671/GTEx_v8/"
+###Tiles examples
+input<- "X/"
 tissue<-"FallopianTube"
-m<-readRDS("Desktop/TFM/bsc83671/GTEx_v8/Allal/Differential_expression/old_varpar/variance_partition/results/mean_tiles/FallopianTube/epithelium.rds")
+
+#Read variance partition results
+m<-readRDS("X/Allal/Differential_expression/old_varpar/variance_partition/results/mean_tiles/FallopianTube/epithelium.rds")
 max_feat_epi<-rownames(m[order(m$age, decreasing = TRUE),])[1]
+
+#Read MOFA Object only to take the feature values needed
 MOFAobject_trained<-readRDS(paste0(input, "/Laura/MOFA/MOFA_", tissue, "_only_matching_donors_4_ensg_CORRECTED.rds"))
 metadata_tot <- readRDS(paste0(input, "/Laura/00.Data/v10/", tissue, "/metadata.rds"))
 filter<-readRDS(paste0(input, "/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
@@ -236,12 +228,6 @@ metadata<- metadata_tot[metadata_tot$Donor %in% filter$Subject.ID,]
 metadata$Age_bins <- ifelse(metadata$Age<=35, "young",
                             ifelse(metadata$Age>35 & metadata$Age<60, "middle", "old"))
 metadata$Age_bins<-as.factor(metadata$Age_bins)
-###Ancestry bins
-# metadata$Ancestry_bins <-cut(metadata$Ancestry, 
-#                              breaks = 3, 
-#                              labels = c("Low", "Medium","High"),
-#                              include.lowest = TRUE)
-# metadata$Ancestry_bins<-as.factor(metadata$Ancestry_bins)
 
 metadata_MOFA<-metadata
 colnames(metadata_MOFA)[1]<-"sample"
@@ -249,75 +235,76 @@ metadata_MOFA<- metadata_MOFA[metadata_MOFA$sample %in% colnames(MOFAobject_trai
 metadata_MOFA$Sample<-NULL
 ordered_metadata <- metadata_MOFA[order(metadata_MOFA$Age), ]
 samples_metadata(MOFAobject_trained) <- metadata_MOFA
+
+#Select the view we need
 data <- get_data(MOFAobject_trained, 
                  views = "epithelium", 
                  as.data.frame = TRUE
 )
 
 data_with_age<-merge(data, metadata_MOFA[,c("sample","Age", "Ancestry", "BMI")], by= "sample")
-200_epithelium
 d<-data_with_age[data_with_age$feature=="313_epithelium",]
-filter<-readRDS(paste0("Desktop/TFM/bsc83671/GTEx_v8/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
+filter<-readRDS(paste0("X/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
 d<-d[d$sample %in% filter$Subject.ID,]
+
+#Order by feature value and select max and mins
 d<-d[order(d$value, decreasing = TRUE),]
 d_max<-d[d$value==max(d$value), ]
 d_min<-d[d$value==min(d$value), ]
-d
 
-
-input<- "Desktop/TFM/bsc83671/GTEx_v8/"
+#Endocervix tiles
+input<- "X/"
 tissue<-"CervixEndocervix"
-m<-readRDS("Desktop/TFM/bsc83671/GTEx_v8/Allal/Differential_expression/old_varpar/variance_partition/results/mean_tiles/Endocervix/glandular_epithelium.rds")
+
+#Read variance partition results
+m<-readRDS("X/Allal/Differential_expression/old_varpar/variance_partition/results/mean_tiles/Endocervix/glandular_epithelium.rds")
 max_feat_epi<-rownames(m[order(m$age, decreasing = TRUE),])[1]
+
+#Read MOFA Object only to take the feature values needed
 MOFAobject_trained<-readRDS(paste0(input, "/Laura/MOFA/MOFA_", tissue, "_only_matching_donors_4_ensg_CORRECTED.rds"))
 metadata_tot <- readRDS(paste0(input, "/Laura/00.Data/v10/", tissue, "/metadata.rds"))
 filter<-readRDS(paste0(input, "/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
-
-
-#For using continuous ancestry as a covariate (otherwise we use it as a categorical variable)
 metadata_tot$Ancestry<- NULL
 ancestry_file<- read.table(paste0(input,"/Laura/00.Data/admixture_inferred_ancestry.txt"))
 ances<-ancestry_file[,c(1,3)]
 colnames(ances)<- c("Donor", "Ancestry")
 metadata_tot<-merge(metadata_tot, ances, by= "Donor")
 metadata<- metadata_tot[metadata_tot$Donor %in% filter$Subject.ID,]
-metadata$Age_bins <- ifelse(metadata$Age<=35, "young",
-                            ifelse(metadata$Age>35 & metadata$Age<60, "middle", "old"))
-metadata$Age_bins<-as.factor(metadata$Age_bins)
-###Ancestry bins
-# metadata$Ancestry_bins <-cut(metadata$Ancestry, 
-#                              breaks = 3, 
-#                              labels = c("Low", "Medium","High"),
-#                              include.lowest = TRUE)
-# metadata$Ancestry_bins<-as.factor(metadata$Ancestry_bins)
 
+#Add MOFA metadata
 metadata_MOFA<-metadata
 colnames(metadata_MOFA)[1]<-"sample"
 metadata_MOFA<- metadata_MOFA[metadata_MOFA$sample %in% colnames(MOFAobject_trained@data[[1]]$group1),]
 metadata_MOFA$Sample<-NULL
 ordered_metadata <- metadata_MOFA[order(metadata_MOFA$Age), ]
 samples_metadata(MOFAobject_trained) <- metadata_MOFA
+
+#Select the view we need
 data <- get_data(MOFAobject_trained, 
                  views = "glandular_epithelium", 
                  as.data.frame = TRUE
 )
 
 data_with_age<-merge(data, metadata_MOFA[,c("sample","Age", "Ancestry", "BMI")], by= "sample")
-241_glandular_epithelium
 d<-data_with_age[data_with_age$feature=="313_glandular_epithelium",]
-filter<-readRDS(paste0("Desktop/TFM/bsc83671/GTEx_v8/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
+filter<-readRDS(paste0("X/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
 d<-d[d$sample %in% filter$Subject.ID,]
+
+#Order by feature value and select max and mins
 d<-d[order(d$value, decreasing = TRUE),]
 d_max<-d[d$value==max(d$value), ]
 d_min<-d[d$value==min(d$value), ]
-epithelium<-d
 
 
 
-input<- "Desktop/TFM/bsc83671/GTEx_v8/"
+#Ectocervix tiles
 tissue<-"CervixEctocervix"
-m<-readRDS("Desktop/TFM/bsc83671/GTEx_v8/Allal/Differential_expression/old_varpar/variance_partition/results/mean_tiles/Ectocervix/epithelium.rds")
+
+#Read variance partition results
+m<-readRDS("X/Allal/Differential_expression/old_varpar/variance_partition/results/mean_tiles/Ectocervix/epithelium.rds")
 max_feat_epi<-rownames(m[order(m$age, decreasing = TRUE),])[1]
+
+#Read MOFA Object only to take the feature values needed
 MOFAobject_trained<-readRDS(paste0(input, "/Laura/MOFA/MOFA_", tissue, "_only_matching_donors_4_ensg_CORRECTED.rds"))
 metadata_tot <- readRDS(paste0(input, "/Laura/00.Data/v10/", tissue, "/metadata.rds"))
 filter<-readRDS(paste0(input, "/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
@@ -330,34 +317,26 @@ ances<-ancestry_file[,c(1,3)]
 colnames(ances)<- c("Donor", "Ancestry")
 metadata_tot<-merge(metadata_tot, ances, by= "Donor")
 metadata<- metadata_tot[metadata_tot$Donor %in% filter$Subject.ID,]
-metadata$Age_bins <- ifelse(metadata$Age<=35, "young",
-                            ifelse(metadata$Age>35 & metadata$Age<60, "middle", "old"))
-metadata$Age_bins<-as.factor(metadata$Age_bins)
-###Ancestry bins
-# metadata$Ancestry_bins <-cut(metadata$Ancestry, 
-#                              breaks = 3, 
-#                              labels = c("Low", "Medium","High"),
-#                              include.lowest = TRUE)
-# metadata$Ancestry_bins<-as.factor(metadata$Ancestry_bins)
-
 metadata_MOFA<-metadata
 colnames(metadata_MOFA)[1]<-"sample"
 metadata_MOFA<- metadata_MOFA[metadata_MOFA$sample %in% colnames(MOFAobject_trained@data[[1]]$group1),]
 metadata_MOFA$Sample<-NULL
 ordered_metadata <- metadata_MOFA[order(metadata_MOFA$Age), ]
 samples_metadata(MOFAobject_trained) <- metadata_MOFA
+
+#Select the view we need
 data <- get_data(MOFAobject_trained, 
                  views = "epithelium", 
                  as.data.frame = TRUE
 )
-297_epithelium
 data_with_age<-merge(data, metadata_MOFA[,c("sample","Age", "Ancestry", "BMI")], by= "sample")
 d<-data_with_age[data_with_age$feature=="313_epithelium",]
-filter<-readRDS(paste0("Desktop/TFM/bsc83671/GTEx_v8/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
+filter<-readRDS(paste0("X/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
 d<-d[d$sample %in% filter$Subject.ID,]
+
+#Order by feature value and select max and mins
 d<-d[order(d$value, decreasing = TRUE),]
 d_max<-d[d$value==max(d$value), ]
 d_min<-d[d$value==min(d$value), ]
 
-d
 

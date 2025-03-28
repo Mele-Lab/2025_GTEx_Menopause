@@ -500,14 +500,14 @@ plot_enrichment_results <- function(enrichment_results) {
 
 library(vroom)
 prfx
-prfx_data = "Desktop/TFM/bsc83671/GTEx_v8/Ole/"
+prfx_data = "X/Ole/"
 gene_annotation <- vroom(paste0(prfx_data,"tissues/v10/gencode.v39.annotation.bed"))
-prfx = "Desktop/TFM/bsc83671/GTEx_v8/"
+prfx = "X/"
 tissue = "Uterus"
 #FOR GTEx v10
 counts_tot <- readRDS(paste0(prfx,"Ole/tissues/v10/", tissue, "/counts.rds"))
 metadata <- readRDS(paste0(prfx,"Ole/tissues/v10/", tissue, "/metadata.rds"))
-prfx2 = "Desktop/TFM/bsc83671/GTEx_v8/Laura/12.Tissues_substructures/DEA/DEA_v10/"
+prfx2 = "X/Laura/12.Tissues_substructures/DEA/DEA_v10/"
  ## loading the DEGs to subset the clustering to them
 dea_res = readRDS(paste0(prfx2, tissue,"/all_cov_no_inter/", tissue, "_all_cov_no_inter_AGE_covariates_and_traits.results.rds"))
 dea_res_age = dea_res$Age[dea_res$Age$adj.P.Val<0.05,]
@@ -516,7 +516,7 @@ dea_res_age = dea_res$Age[dea_res$Age$adj.P.Val<0.05,]
 span_t = 0.75
 
 #### analysis 
-output_dir = paste0("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/", tissue,"_span",span_t, "_manual12")
+output_dir = paste0("X/Laura/Figure_plots/", tissue,"_span",span_t, "_manual12")
 
 common_samples = intersect(metadata$Sample, colnames(counts_tot))
 
@@ -539,18 +539,3 @@ background_genes <- gsub("\\..*", "",rownames(counts_tot))
 gene_clusters = convert_to_clusters(results$clusters)
 enrichment_results <- perform_enrichment_analysis(gene_clusters, background_genes, output_dir)
 l_plots<-plot_enrichment_results(enrichment_results)
-
-
-enrichment_results<-uterus_enrich
-
-
-
-
-uterus_enrich<-enrichment_results
-
-ovary_enrich<-enrichment_results
-library(patchwork)
-
-total_plots<-l_plots[1]$cluster1+l_plots[2]$cluster2+l_plots[3]$cluster8+l_plots[4]$cluster10+plot_layout(nrow = 1, heights = unit(1, "null"))
-
-

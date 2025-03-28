@@ -12,8 +12,8 @@ library(stats)
 
 
 #C
-result_cnn<- readRDS("Desktop/TFM/bsc83671/GTEx_v8/Laura/05.CNN/metrics_new_validation_filtered_perdonor_ACC.rds")
-result_cnn_pertile<- readRDS("Desktop/TFM/bsc83671/GTEx_v8/Laura/05.CNN/metrics_new_validation_filteredpertile_ACC.rds")
+result_cnn<- readRDS("X/Laura/05.CNN/metrics_new_validation_filtered_perdonor_ACC.rds")
+result_cnn_pertile<- readRDS("X/Laura/05.CNN/metrics_new_validation_filteredpertile_ACC.rds")
 result_cnn$Metric<- "Per-donor"
 result_cnn_pertile$Metric <- "Per-tile"
 pal <- c("Uterus" = "#6DB6FFFF", "Ovary" = "#009292FF", "Vagina" = "#B66DFFFF", "Breast" = "#490092FF", "CervixEndocervix"= "#FF6DB6FF", "CervixEctocervix"="#FFB6DBFF", "FallopianTube"="#DB6D00FF")
@@ -261,16 +261,8 @@ cnn<-p
 ge<-p
 acc<-p
 all_tog<- acc+cnn+ge
-pdf("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/fig1_panel3.pdf", width = 12.2, height = 5.3) 
-all_tog
-dev.off()
 
-svg("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/fig1_panel3.svg", width = 10, height = 5.2, pointsize = 12)
-all_tog
-# Close the SVG device to save the file
-dev.off()
-
-pdf("Desktop/Figures//fig1_panel3.pdf", width = 12.2, height = 5.3) 
+pdf("Desktop/Figures/Fig1_CDE.pdf", width = 12.2, height = 5.3) 
 all_tog
 dev.off()
 
@@ -283,7 +275,7 @@ ovary_clas<-p
 ut_clas<-p
 all_classi<-ut_clas+ vag_clas+ovary_clas
 
-
+input<- "X"
 ##Epithelial thickness
 measures <- read.csv(paste0(input, "/Allal/CellProfiler/results/Vagina/newSecondaryFilteredVagina_Image.csv"))
 median_value_columns <- c("FileName_Vagina","Median_FilterObjects_AreaShape_MinorAxisLength", "Median_FilterObjects_AreaShape_MinorAxisLength", "Median_FilterObjects_AreaShape_MinorAxisLength")
@@ -296,7 +288,7 @@ image_median_values$FileName_Vagina <- sub("_binary_mask_class_epithelium_compre
 image_median_values$FileName_Vagina <- sub("^([^-]+-[^-]+)-.*$", "\\1", image_median_values$FileName_Vagina)
 
 tissue<- "Vagina"
-metadata<-read.csv("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/00.Data/GTEx_Subject_Phenotypes.GRU.csv", sep="\t", header=TRUE)
+metadata<-read.csv("~/X/Laura/00.Data/GTEx_Subject_Phenotypes.GRU.csv", sep="\t", header=TRUE)
 
 filter<-readRDS(paste0(input,"/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
 
@@ -628,19 +620,12 @@ p2 <- ggplot(measures_filtered, aes(x = decade_bins, y = Median_FilterObjects_Ar
 epithelial_thick<-p2
 all_fig3ABCD<-all_classi+epithelial_thick+ plot_layout(nrow = 1, heights = unit(1, "null"))
 
-pdf("Desktop/Figures/fig3_ABCD.pdf", width = 15, height = 4.3) 
+pdf("X/Figures/fig3_ABCD.pdf", width = 15, height = 4.3) 
 all_fig3ABCD
 dev.off()
 
-svg("Desktop/Figures/fig3_ABCD.svg", width = 15, height = 5, pointsize = 12)
+svg("X/Figures/fig3_ABCD.svg", width = 15, height = 5, pointsize = 12)
 all_fig3ABCD
 dev.off()
 
-pdf("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/fig3_ABCD.pdf", width = 15, height = 5) 
-all_fig3ABCD
-dev.off()
-
-svg("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/fig3_ABCD.svg", width = 15, height = 5, pointsize = 12)
-all_fig3ABCD
-dev.off()
 

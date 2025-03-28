@@ -13,7 +13,7 @@ library("MOFAdata")
 
 
 
-gene_annotation  <- read.csv("~/Desktop/TFM/bsc83671/GTEx_v8//Laura/00.Data/gencode.v39.annotation.bed")
+gene_annotation  <- read.csv("~/X/Laura/00.Data/gencode.v39.annotation.bed")
 
 # Retrieve entrez id
 entrez.id <- idMapping(organism = "hsapiens",
@@ -29,7 +29,7 @@ gene_annotation$entrez.id <- sapply(sub("\\..*", "", gene_annotation$ensembl.id)
 )
 
 
-tissue<-"Ovary"
+tissue<-"Vagina"
 
 MOFAobject_trained<-readRDS(paste0(input, "/Laura/MOFA/MOFA_", tissue, "_only_matching_donors_10_ensg_CORRECTED.rds"))
 
@@ -71,9 +71,8 @@ gsea_simplified <- simplify(gsea_result,
 
 # View the simplified result
 r<-gsea_simplified@result[gsea_simplified@result$p.adjust<0.05, c("Description","setSize", "enrichmentScore", "NES", "p.adjust")]
-saveRDS(r, paste0("Desktop/TFM/bsc83671/GTEx_v8/Laura/12.Tissues_substructures/Enrichment/Enrichments_GSEA/gsea_", tissue, "_goterms_MOFA.rds"))
-tail(r)
-tissue
+saveRDS(r, paste0("X/Laura/12.Tissues_substructures/Enrichment/Enrichments_GSEA/gsea_", tissue, "_goterms_MOFA.rds"))
+
 r_down<-r[r$NES<0,]
 
 # Define terms to bold (modify as needed)
@@ -100,8 +99,6 @@ plot_upregulated <- ggplot(r_down, aes(x = NES, y = reorder(Description, NES), c
         plot.title = element_text(size = 14, hjust = 0.5, color = "black"),
         legend.text = element_text(size = 14, color = "black"),
         panel.grid = element_blank(),                    # Remove all grid lines
-        # axis.line.x = element_line(size = 0.5, color = "grey80"), # Add x-axis line
-        # axis.line.y = element_line(size = 0.5, color = "grey80"),
         panel.border = element_rect(color = "grey80", size = 0.5, fill = NA)
         # Add full border
   )

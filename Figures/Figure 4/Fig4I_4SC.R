@@ -1,4 +1,4 @@
-####################################################################################
+#####################################################################################
 
 ###Code for the heatmaps (data shown in Main Figure 4F) and Supplementary Figure XX)#
 
@@ -32,7 +32,7 @@ library(tibble)
 
 # Define input path
 
-input_path <- "/X/GTEx_v8/"
+input_path <- "/X/"
 
 
 
@@ -376,7 +376,7 @@ annot_matrix[is.na(annot_matrix)] <- ""
 
 # Define desired row order
 
-desired_order <- c("Ovary", "Myometrium", "Uterus")
+desired_order <- c("Uterus", "Myometrium", "Ovary")
 
 
 
@@ -412,11 +412,11 @@ breaks <- seq(min_val, max_val, length.out = 101)
 
 # Generate heatmap with fixed high/low colors and correct star placement
 
-heatmap_plot2 <- pheatmap(small_logFC_matrix, 
+heatmap_plot2 <- pheatmap(t(small_logFC_matrix), 
                           
                           cluster_rows = FALSE,  
                           
-                          cluster_cols = TRUE, 
+                          cluster_cols = FALSE, 
                           
                           scale = "none",  
                           
@@ -430,7 +430,7 @@ heatmap_plot2 <- pheatmap(small_logFC_matrix,
                           
                           fontsize_number = 20,  # Large stars
                           
-                          display_numbers = annot_matrix,  # Overlay stars
+                          display_numbers = t(annot_matrix),  # Overlay stars
                           
                           number_color = "black",  # Stars in black
                           
@@ -448,15 +448,14 @@ heatmap_plot2 <- pheatmap(small_logFC_matrix,
 
 
 
+
+
 heatmap_plot2
 
 
 
-
-
-ggsave(filename = "/X/FINAL_small_heatmap_WES_ANM.pdf", 
+ggsave(filename = "/X/FINAL_trial_small_heatmap_WES_ANM.pdf", 
        
        plot = heatmap_plot2,  
        
        width = 5, height = 5, dpi = 300)
-

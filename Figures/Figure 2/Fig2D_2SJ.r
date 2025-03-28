@@ -1,4 +1,4 @@
-.libPaths(c("/gpfs/home/bsc/bsc110937/Rlibs", .libPaths()))
+.libPaths(c("/x/Rlibs", .libPaths()))
 library(ggplot2)
 library(dplyr)
 library(reshape)
@@ -6,7 +6,7 @@ library(yaml)
 library(tidyr)
 
 tissues <- c("Vagina", "Uterus", "Ovary", "Endocervix", "Ectocervix", "FallopianTube", "BreastMammaryTissue")
-input<- "Desktop/TFM/bsc83671/GTEx_v8/"
+input<- "X/"
 
 
 covariate_colors <- c(
@@ -276,8 +276,6 @@ ggsave(paste0(input,"/Laura/Figures_plots/varpar_stacked_barplot_big_subtissue.s
 # Save the plot
 
 
-
-
 p3 <- ggplot(long_results, aes(x = Tissue, y = Proportion, fill = Covariate)) +
   geom_bar(stat = "identity", position = "stack", alpha = 0.7) +  # Stacked bars
   coord_flip() +  # Flip coordinates for horizontal bars
@@ -299,21 +297,12 @@ p3 <- ggplot(long_results, aes(x = Tissue, y = Proportion, fill = Covariate)) +
 excluding residuals (%)")
 
 # Save the plot
-ggsave(paste0(input,"/Laura/Figures_plots/varpar_stacked_barplot_all_subtissue.svg"), plot = p3, device = "svg", width = 2.5)
-ggsave(paste0(input,"/Laura/Figures_plots/varpar_stacked_barplot_all_subtissue.svg"), plot = p3, device = "svg", width = 2.5)
-pdf("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/figS2_I.pdf", width = 2.5) 
+
+pdf("X/Figures/figS2_I.pdf", width = 2.5) 
 p3
 dev.off()
 
-svg("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/figS2_I.svg", width = 2.5, pointsize = 12)
-p3
-dev.off()
-
-pdf("Desktop/Figures/figS2_I.pdf", width = 2.5) 
-p3
-dev.off()
-
-svg("Desktop/Figures/figS2_I.svg", width = 2.5)
+svg("X/Figures/figS2_I.svg", width = 2.5)
 p3
 dev.off()
 

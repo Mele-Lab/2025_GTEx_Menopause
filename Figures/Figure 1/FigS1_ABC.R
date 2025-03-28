@@ -2,7 +2,7 @@
 library(dplyr)
 library(ggplot2)
 
-common_dir<- "~/Desktop/TFM/bsc83671/GTEx_v8/Laura/05.CNN/35yo_separation_FEMALE/"
+common_dir<- "~/X/Laura/05.CNN/35yo_separation_FEMALE/"
 tissues<- c("Uterus", "Ovary", "Vagina", "BreastMammaryTissue")
 results<-list()
 for (tissue in tissues){
@@ -49,14 +49,14 @@ for (tissue in tissues){
     summarise("old" = mean(prob_class0), "young" = mean(prob_class1), "SD_young"=sd(prob_class1))
   result$Tissue<- tissue
   results[[tissue]]<-result
-  # write.csv(result, paste0("Desktop/TFM/bsc83671/GTEx_v8/Laura/13.Hybrid_probs/", tissue, "_hybrid_tile_probabilities_filtered_all_TILE.csv"))
+  # write.csv(result, paste0("X/Laura/13.Hybrid_probs/", tissue, "_hybrid_tile_probabilities_filtered_all_TILE.csv"))
   
 }
 ##QUADRANTS
 ovary_probs<-as.data.frame(results$Ovary)[,c(1,2)]
 uterus_probs<-as.data.frame(results$Uterus)[,c(1,2)]
 
-age_file<-read.csv("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/00.Data/GTEx_Subject_Phenotypes.GRU.csv", sep="\t", header=TRUE)
+age_file<-read.csv("~/X/Laura/00.Data/GTEx_Subject_Phenotypes.GRU.csv", sep="\t", header=TRUE)
 colnames(age_file)[2]<-"Donor"
 df_combined<-merge(ovary_probs, uterus_probs, by="Donor")
 colnames(df_combined)<-c("Donor", "Ovary_probs", "Uterus_probs")
@@ -140,10 +140,10 @@ boxplot_plot
 
 
 ###B
-ge_acc<-data.frame(
-  Organ=c("Uterus", "Ovary", "Vagina"),
-  Accuracy=c(0.902, 0.935, 0.696)
-)
+
+#Gene expression CNN's accuracies
+ge_acc<-read.csv("X/Ole/paper/for_plotting/gene_expression_classifier_accuracy.csv")
+
 ggplot(global, aes(x = Tissue_offset, y = acc, color = Organ, alpha = Metric)) +
   geom_point(size = 4) +
   geom_text(aes(label = sprintf("%.2f", acc)), 
@@ -191,7 +191,6 @@ ge_acc<-ggplot(ge_acc, aes(x = Organ, y = Accuracy, color = Organ)) +
 suppressMessages(library(edgeR))
 suppressMessages(library(limma))
 suppressMessages(library(dplyr))
-suppressMessages(library(DEswan))
 suppressMessages(library(ggplot2))
 suppressMessages(library(tidyr))
 suppressMessages(library(tibble))
@@ -204,10 +203,10 @@ buckets.size = 10
 interval.size = 0
 
 tissue<-"Vagina"
-outpath<- paste0("Desktop/TFM/bsc83671/GTEx_v8/Laura/DEswan/All_tissues/", tissue, "/")
+outpath<- paste0("X/Laura/sliding_window_DEA/All_tissues/", tissue, "/")
 # buckets.size = 10
 # interval.size = 0
-r<-readRDS(paste0("Desktop/TFM/bsc83671/GTEx_v8/Laura/DEswan/All_tissues/", tissue, "/DEswan_", tissue, "_female_results.rds"))
+r<-readRDS(paste0("X/Laura/sliding_window_DEA/All_tissues/", tissue, "/sliding_window_DEA_", tissue, "_female_results.rds"))
 
 pval<-"adj.P.Val"
 metadata_tot <- readRDS(paste0(input, "Laura/00.Data/v10/", tissue, "/metadata.rds"))
@@ -322,18 +321,12 @@ not_normalized_degs <- ggplot(t_t, aes(x = Window, y = Genes, group = Organ, col
 library(patchwork)
 sup1_1<-quadrants+ ge_acc+not_normalized_degs+plot_layout(nrow = 1, heights = unit(1, "null"))
 # Print the plot
-pdf("Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/figS1_ABCD_2.pdf", width = 11, height = 5) 
+
+
+pdf("X/Figures/figS1_ABCD_2.pdf", width = 11, height = 5) 
 sup1_1
 dev.off()
 
-svg("~/Desktop/TFM/bsc83671/GTEx_v8/Laura/Figure_plots/figS1_ABCD_2.svg", width = 11, height = 5, pointsize = 12)
-sup1_1
-dev.off()
-
-pdf("Desktop/Figures/figS1_ABCD_2.pdf", width = 11, height = 5) 
-sup1_1
-dev.off()
-
-svg("Desktop/Figures/figS1_ABCD_2.svg", width = 11, height = 5, pointsize = 12)
+svg("X/Figures/figS1_ABCD_2.svg", width = 11, height = 5, pointsize = 12)
 sup1_1
 dev.off()
