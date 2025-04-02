@@ -22,7 +22,7 @@ aging and menopause-associated disease risk.
 ### - 04. CellProfiler postprocessing
       Analysis of epithelium measurements obtained with our CellProfiler pipeline.
       CellProfiler: https://cellprofiler.org/
-### - 05.Variance partition analysis
+### - 05. Variance partition analysis
       Analysis of the proportion of variation in image features attributable to demographic traits for each organ and tissue structure, while controlling for demographic variables and batch effects.
 ### - 06. MOFA (Multi-Omics Factor Analysis)
       Implementation of MOFA with two types of data modalities: image features and gene expression data. We share also the code for Gene Set Enrichment Analysis for the ranked genes according to their contribution to factors.
