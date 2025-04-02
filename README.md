@@ -22,12 +22,14 @@ aging and menopause-associated disease risk.
 ### - 04. CellProfiler postprocessing
       Analysis of epithelium measurements obtained with our CellProfiler pipeline.
       CellProfiler: https://cellprofiler.org/
-### - 05. MOFA (Multi-Omics Factor Analysis)
+### - 05.Variance partition analysis
+      Analysis of the proportion of variation in image features attributable to demographic traits for each organ and tissue structure, while controlling for demographic variables and batch effects.
+### - 06. MOFA (Multi-Omics Factor Analysis)
       Implementation of MOFA with two types of data modalities: image features and gene expression data. We share also the code for Gene Set Enrichment Analysis for the ranked genes according to their contribution to factors.
       MOFA original repo: https://github.com/bioFAM/MOFA2 
-### - 06. DEA and enrichments 
+### - 07. DEA and enrichments 
       Differential Expression Analysis (DEA) code with GTEx gene expression data and functional enrichments against several databases.
-### - 07. GWAS
+### - 08. GWAS
       GWAS overlap of the differentially expressed genes against different female reproductive GWAS.
-### - 08. CODA (Compositional Data Analysis)
+### - 09. CODA (Compositional Data Analysis)
       Implementation of CODA to test both cell-type and tissue proportion changes with age.
