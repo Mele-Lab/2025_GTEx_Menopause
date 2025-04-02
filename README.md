@@ -11,6 +11,7 @@ These findings position menopause as a key inflection point in reproductive agin
 aging and menopause-associated disease risk.
 ![Git_image](https://github.com/user-attachments/assets/1e58ef44-31c2-4f04-b3a5-8d089cf19405)
 
+
 ## 📝 Table of Contents
 ### - 01. CNNs
       VGG19-based CNN models' code for histological tissue tiles.
@@ -22,11 +23,7 @@ aging and menopause-associated disease risk.
 ### - 04. CellProfiler postprocessing
       Analysis of epithelium measurements obtained with our CellProfiler pipeline.
       CellProfiler: https://cellprofiler.org/
-<<<<<<< HEAD
 ### - 05. Variance partition analysis
-=======
-### - 05.Variance partition analysis
->>>>>>> a69493a (Commit)
       Analysis of the proportion of variation in image features attributable to demographic traits for each organ and tissue structure, while controlling for demographic variables and batch effects.
 ### - 06. MOFA (Multi-Omics Factor Analysis)
       Implementation of MOFA with two types of data modalities: image features and gene expression data. We share also the code for Gene Set Enrichment Analysis for the ranked genes according to their contribution to factors.
