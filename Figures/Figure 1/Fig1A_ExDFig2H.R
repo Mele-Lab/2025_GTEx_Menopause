@@ -36,8 +36,8 @@ for (tissue in tissues){
   colnames(filter)[4]<-"SUBJID"
   filter$Samples<-"Images"
   filter<- merge(filter[,c("SUBJID", "Samples")], age_file[,c(2,5, 12)], by="SUBJID")
-  filter<- merge(filter, ances, by="SUBJID")
   filter$Sample_size<- length(unique(filter$SUBJID))
+  filter<- merge(filter, ances, by="SUBJID")
   metadata_tot<-metadata_tot[metadata_tot$SUBJID %in% filter$SUBJID,]
   metadata_tot$Sample_size<- length(unique(metadata_tot$SUBJID))
   
