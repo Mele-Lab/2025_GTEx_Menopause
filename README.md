@@ -19,7 +19,7 @@ aging and menopause-associated disease risk.
       Adaptation of LIME code to our purpose: identify tile areas that contribute to each classification category using our CNN models.
       LIME: https://arxiv.org/abs/1606.05386
 ### - 03. Tissue segmentation
-      Matlab code used for manually segmenting female reproductive organs into their constituent tissues and then fine-tune ViT-S/8 with them.
+      Matlab code used for manually segmenting female reproductive organs into their constituent tissues and then use them for KNN and later segmentation for all the WSIs.
 ### - 04. CellProfiler postprocessing
       Analysis of epithelium measurements obtained with our CellProfiler pipeline.
       CellProfiler: https://cellprofiler.org/
