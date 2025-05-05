@@ -65,7 +65,7 @@ p<-ggplot(df_long, aes(x = position, y = accuracy, color = tissue, alpha = accur
         axis.line.y = element_line(size = 0.5, color = "grey80"),
         panel.border = element_rect(color = "grey80", size = 0.5, fill = NA) )
 
-pdf("X/Figures/Fig3S_A.pdf", width = 6.5, height = 4.5) 
+pdf("X/Figures/Fig4S_A.pdf", width = 6.5, height = 4.5) 
 p
 dev.off()
 
