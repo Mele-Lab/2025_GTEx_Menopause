@@ -1,5 +1,5 @@
 # 2025 GTEx Menopause Project
-Published in (insert bioarxiv link when submitted)
+Published in https://www.biorxiv.org/content/10.1101/2025.05.16.654406v1
 ## 🔍 Abstract
 Female reproductive aging is a complex process with systemic health implications, yet how human aging unfolds across reproductive organs and tissues remains understudied. 
 Here, we integrate deep learning–based analysis of 1,112 histological images with RNA-sequencing data from 659 samples across seven reproductive organs in 304 female donors aged 20–70
