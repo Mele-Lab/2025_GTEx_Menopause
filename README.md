@@ -17,20 +17,25 @@ aging and menopause-associated disease risk.
       VGG19-based CNN models' code for histological tissue tiles.
 ### - 02. LIME (Local Interpretable Model-Agnostic Explanations)
       Adaptation of LIME code to our purpose: identify tile areas that contribute to each classification category using our CNN models.
-      LIME: https://arxiv.org/abs/1606.05386
+      LIME article available at: https://arxiv.org/abs/1606.05386 
 ### - 03. Tissue segmentation
-      Matlab code used for manually segmenting female reproductive organs into their constituent tissues and then use them for KNN and later segmentation for all the WSIs.
+      MATLAB code used for manually segmenting female reproductive organs into their constituent tissues, and then use them for KNN and later segmentation for all the WSIs.
+      MATLAB version R2024b, https://es.mathworks.com/help/install/ug/install-products-with-internet-connection.html
 ### - 04. CellProfiler postprocessing
       Analysis of epithelium measurements obtained with our CellProfiler pipeline.
-      CellProfiler: https://cellprofiler.org/
+      CellProfiler v4.2.8, https://cellprofiler.org/
+      https://github.com/CellProfiler/CellProfiler
 ### - 05. Variance partition analysis
       Analysis of the proportion of variation in image features attributable to demographic traits for each organ and tissue structure, while controlling for demographic variables and batch effects.
 ### - 06. MOFA (Multi-Omics Factor Analysis)
       Implementation of MOFA with two types of data modalities: image features and gene expression data. We share also the code for Gene Set Enrichment Analysis for the ranked genes according to their contribution to factors.
-      MOFA original repo: https://github.com/bioFAM/MOFA2 
+      MOFA original repository: https://github.com/bioFAM/MOFA2 
 ### - 07. DEA and enrichments 
       Differential Expression Analysis (DEA) code with GTEx gene expression data and functional enrichments against several databases.
 ### - 08. GWAS
       GWAS overlap of the differentially expressed genes against different female reproductive GWAS.
 ### - 09. CODA (Compositional Data Analysis)
       Implementation of CODA to test both cell-type and tissue proportion changes with age.
+
+## System requirements
+All the originally generated code has been run in R v4.4.1 or Python v3.11.5, and can be run on any operating system (Linux, macOS, Windows). The specific packages needed for each step are specified in the corresponding scripts.
