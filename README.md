@@ -46,7 +46,7 @@ CellProfiler v4.2.8, https://cellprofiler.org/
 https://github.com/CellProfiler/CellProfilerprocessing of the measurements obtained from CellProfiler.
       
 ### - 05. Variance partition analysis
-- variance_partition.R: Analysis of the proportion of variation in image features attributable to demographic traits for each organ and tissue structure, while controlling for demographic variables and batch effects.
+- variance_partition.R: analysis of the proportion of variation in image features attributable to demographic traits for each organ and tissue structure, while controlling for demographic variables and batch effects.
       
 ### - 06. MOFA (Multi-Omics Factor Analysis)
 - MOFA.R: implementation of MOFA with two types of data modalities: image features and gene expression data.
@@ -62,7 +62,7 @@ MOFA original repository: https://github.com/bioFAM/MOFA2
 - gwas.R: GWAS overlap of the differentially expressed genes against different female reproductive GWAS.
       
 ### - 09. CODA (Compositional Data Analysis)
-- coda_pivot_coordinates.R: Implementation of CODA to test both cell-type and tissue proportion changes with age.
+- coda_pivot_coordinates.R: implementation of CODA to test both cell-type and tissue proportion changes with age.
 
 ## System requirements
 All the originally generated code has been run in R v4.4.1 or Python v3.11.5, and can be run on any operating system (Linux, macOS, Windows). The specific packages needed for each step are specified in the corresponding scripts.
