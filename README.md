@@ -14,7 +14,7 @@ aging and menopause-associated disease risk.
 
 ## 📝 Table of Contents
 ### - 00.Data
-      - enrichments_dbs_files: databases' files for the enrichments performed in  0.7.DEA and enrichments.
+      #### - enrichments_dbs_files: databases' files for the enrichments performed in  0.7.DEA and enrichments.
       - GWAS_datasets: reference datasets to assess traits in 08.GWAS.
       - 2000_subset_balanced_tile_features_Uterus_1000.csv: subset of 2000 tiles from uterus with their values for the 384 features extracted.
       - SIMULATED_Subject_Phenotypes.csv: simulated (not real!!) donors' data, use it to try the code. For confidentiality reasons, the true data cannot be shared.
