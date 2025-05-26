@@ -67,4 +67,4 @@ MOFA original repository: https://github.com/bioFAM/MOFA2
 - coda_pivot_coordinates.R: CODA implementation to test both cell-type and tissue proportion changes with age.
 
 ## System requirements
-All the originally generated code has been run in R v4.4.1 or Python v3.11.5, and can be run on any operating system (Linux, macOS, Windows). The specific packages needed for each step are specified in the corresponding scripts.
+All the originally generated code has been run in R v4.4.1 or Python v3.11.5, and can be run on any operating system (Linux, macOS, Windows). The specific packages needed for each step are specified in the corresponding scripts. Each script runs in a few minutes.
