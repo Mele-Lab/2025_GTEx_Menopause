@@ -17,30 +17,23 @@ shhh(library(scales))
 shhh(library(ggplot2))
 
 # read in files 
-tissue<- "Ovary"
+tissue<- "Uterus"
 experiments <- c("Deconvol", "Substructures")
 experiment<- experiments[1]
 
 
 if (experiment == "Deconvol"){
-  cell_prop<-read.csv("~/X/Laura/gtm-decon/Deconvolution_ovary_pivot_v10.csv", row.names = "X")
+  cell_prop<-read.csv("../00.Data/Deconvolution_uterus_pivot_v10.csv", row.names = "X")
   decon_results<-cell_prop
   #Uterus
-  # colnames(decon_results)<-c('B cells', 'Endothelial cells','Epithelial cells', 'Fibroblasts', 'Macrophages',  'NK cells','Pericytes', 'Smooth muscle cells', 'T cells') 
-  #Ovary
-   colnames(decon_results)<-c('Endothelial cells', 'Epithelial cells','Granulosa cells', 'Immune cells', 'Stromal cells',  'Smooth muscle cells','Theca cells')
+  colnames(decon_results)<-c('B cells', 'Endothelial cells','Epithelial cells', 'Fibroblasts', 'Macrophages',  'NK cells','Pericytes', 'Smooth muscle cells', 'T cells') 
   decon_results$Donor<- as.factor(gsub("^(\\w+-\\w+).*", "\\1", rownames(decon_results)))
   rownames(decon_results)<-decon_results$Donor
   
 
 }else{
-  #Breast
-  #cell_prop<-read.csv(paste0("~/X/Laura/derived_proportions_Craig/", tissue, "/", tissue, "_pivot.csv"))
-  #Ovary
-  # cell_prop<- read.csv(paste0("~/X/Laura/12.Tissues_substructures/", tissue, "_no_follicles_pivot.csv"))
-  #Uterus/vagina
-  cell_prop<- read.csv(paste0("~/X/Laura/12.Tissues_substructures/", tissue, "_pivot.csv"))
-  
+  #Uterus
+  cell_prop<- read.csv(paste0("../00.Data/", tissue, "_pivot.csv"))
   decon_results<-cell_prop
   decon_results$Donor<- as.factor(gsub("^(\\w+-\\w+).*", "\\1", decon_results$slide_id))
   decon_results$slide_id<-NULL
@@ -56,15 +49,13 @@ decon_results$Donor<-NULL
 DF_proportions<-(t(decon_results))
                               
 sex <- "female"
-metadata_tot<-readRDS(paste0("~/X/Laura/00.Data/v10/", tissue, "/metadata.rds"))
+metadata_tot<-readRDS(paste0("../00.Data/", tissue, "/SIMULATED_metadata.rds"))
 
 #Add continuous ancestry
 metadata_tot$Ancestry<- NULL
-ancestry_file<- read.table(paste0(input, "/Laura/00.Data/admixture_inferred_ancestry.txt"))
-ances<-ancestry_file[,c(1,3)]
-colnames(ances)<- c("Donor", "Ancestry")
-metadata_tot<-merge(metadata_tot, ances, by= "Donor")
-filter<-readRDS(paste0("/X/Laura/03.Image_processing/Second_filtering_images/", tissue, "_final_filtered_images.rds"))
+ancestry_file<- read.table("../00.Data/SIMULATED_admixture_inferred_ancestry.txt")
+metadata_tot<-merge(metadata_tot, ancestry_file, by= "Donor")
+filter<-readRDS(paste0("../00.Data/", tissue, "_final_filtered_images.rds"))
 metadata<- metadata_tot[metadata_tot$Donor %in% filter$Subject.ID,]
 metadata<- merge(metadata, df, by= "Donor")
 meta<- metadata
@@ -158,7 +149,4 @@ theme_minimal(base_size = 12) +
 
 print(p)
 
-pdf(paste0("~/X/Laura/12.Tissues_substructures/Figures/Final_v10/", tissue, "_deconvolution_ovary_coda_AGE_pivot.pdf"), width = 5, height = 5)  # Adjust width and height as needed
-p
-dev.off()
 

@@ -28,45 +28,46 @@ np.random.seed(seed)
 torch.manual_seed(seed)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
-workdir = '/X//Laura/05.CNN/35yo_separation_FEMALE/'
+workdir = 'data_examples/'
 tissues = ['Uterus', 'Ovary', 'Vagina', 'BreastMammaryTissue']
-tests =['test', 'young_post', 'val_and_mid']
+# tests =['test', 'young_post', 'val_and_mid']
+tests =['test', 'val_and_mid']
 
 for test in tests:
     for tissue in tissues:
         if tissue == 'Uterus':
             drop=0.5 #After the fine-tunning, each tissue model has its best parameters
-            train_directory = workdir + tissue + '/Tiles512_05/train/' 
-            test_directory = workdir + tissue +'/Tiles512_05/'+ test +'/' 
-            out_file = workdir+tissue+'/selected_tile/hybridtrain'+ test +'_512_tile_Alinsaif_age30_vgg19_predictions_filtered'+ tissue +'.csv'
+            train_directory = workdir + tissue + '/train/' 
+            test_directory = workdir + tissue +'/'+ test +'/'
+            out_file = workdir+tissue+'/hybridtrain'+ test +'_512_tile_Alinsaif_age30_vgg19_predictions_filtered'+ tissue +'.csv'
             # model_path =f"{workdir}{tissue}/tile_hybrid_tile_512_0.001_0.5_0.001_{drop}_15_{tissue}_trained_model_vgg19_bn_1024RSM.pt"
-            model_path = workdir+tissue+'/selected_tile/hybrid_tile_512_Uterus_trained_model_vgg19_bn_1024RSM.pt'
+            model_path = workdir+tissue+'/ACCtile_filtering_hybrid_tile_512_Uterus_trained_model_vgg19_bn_1024RSM.pt'
     
         elif tissue == 'Ovary':
             drop=0.4
             train_directory = workdir + tissue + '/Tiles512_05/train/' 
             test_directory = workdir + tissue +'/Tiles512_05/'+ test +'/' 
-            out_file = workdir+tissue+'/selected_tile/hybridtrain'+ test +'_512_tile_Alinsaif_age30_vgg19_predictions_filtered'+ tissue +'.csv'
+            out_file = workdir+tissue+'/hybridtrain'+ test +'_512_tile_Alinsaif_age30_vgg19_predictions_filtered'+ tissue +'.csv'
             # model_path =f"{workdir}{tissue}/tile_hybrid_tile_512_0.001_0.5_0.001_{drop}_15_{tissue}_trained_model_vgg19_bn_1024RSM.pt"
-            model_path = workdir+tissue+'/selected_tile/hybrid_tile_512_Ovary_trained_model_vgg19_bn_1024RSM.pt'
+            model_path = workdir+tissue+'/ACCtile_filtering_hybrid_tile_512_Ovary_trained_model_vgg19_bn_1024RSM.pt'
     
     
         elif tissue == 'Vagina':
             drop=0.5
-            train_directory = workdir + tissue + '/Tiles256_05/train/' 
-            test_directory = workdir + tissue +'/Tiles256_05/'+ test +'/' 
+            train_directory = workdir + tissue + '/train/' 
+            test_directory = workdir + tissue +'/'+ test +'/' 
             # model_path =f"{workdir}{tissue}/tile_hybrid_tile_256_0.001_0.5_0.001_{drop}_15_{tissue}_trained_model_vgg19_bn_1024RSM.pt"
-            out_file = workdir+tissue+'/selected_tile/hybridtrain'+ test +'_256_tile_Alinsaif_age30_vgg19_predictions_filtered'+ tissue +'.csv'
-            model_path = workdir+tissue+'/selected_tile/hybrid_tile_256_Vagina_trained_model_vgg19_bn_1024RSM.pt'
+            out_file = workdir+tissue+'/hybridtrain'+ test +'_256_tile_Alinsaif_age30_vgg19_predictions_filtered'+ tissue +'.csv'
+            model_path = workdir+tissue+'/ACCtile_filtering_hybrid_tile_256_Vagina_trained_model_vgg19_bn_1024RSM.pt'
     
     
         elif tissue == 'BreastMammaryTissue':
             drop=0.3
-            train_directory = workdir + tissue + '/Tiles512_025_filtering_extra/train/' 
-            test_directory = workdir + tissue +'/Tiles512_025_filtering_extra/'+ test +'/' #For the middle age prediction, train:middle, test:validation
-            out_file = workdir+tissue+'/selected_tile/hybridtrain'+ test +'_512_tile_Alinsaif_age30_vgg19_predictions_filtered'+ tissue +'.csv'
+            train_directory = workdir + tissue + '/train/' 
+            test_directory = workdir + tissue +'//'+ test +'/' #For the middle age prediction, train:middle, test:validation
+            out_file = workdir+tissue+'//hybridtrain'+ test +'_512_tile_Alinsaif_age30_vgg19_predictions_filtered'+ tissue +'.csv'
             # model_path =f"{workdir}{tissue}/tile_filtering_hybrid_tile_512_0.001_0.5_0.001_{drop}_15_{tissue}_trained_model_vgg19_bn_1024RSM.pt"    
-            model_path = workdir+tissue+'/selected_tile/hybrid_tile_512_BreastMammaryTissue_trained_model_vgg19_bn_1024RSM.pt'
+            model_path = workdir+tissue+'/ACCtile_filtering_hybrid_tile_512_BreastMammaryTissue_trained_model_vgg19_bn_1024RSM.pt'
     
             # Define a set of transformations to augment the data
         image_transforms = { 
@@ -126,7 +127,7 @@ for test in tests:
             'test': np.unique(data['test'].targets, return_counts=True)[1]
         }
         
-        model = torch.load('/X//Laura/05.CNN/pretrained_vgg19_bn.pt')
+        model = torch.load('pretrained_vgg19_bn.pt')
         fc_inputs = model.classifier[6].in_features
         model.classifier[6] = torch.nn.Sequential(
             torch.nn.Linear(fc_inputs, 1024),

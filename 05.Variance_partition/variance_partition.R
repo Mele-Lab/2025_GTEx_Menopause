@@ -1,4 +1,4 @@
-.libPaths(c("/x/bsc110937/Rlibs", .libPaths()))
+.libPaths(c("/x/bscxxxx/Rlibs", .libPaths()))
 
 library(limma)
 library(argparse)
@@ -12,7 +12,7 @@ library(stringr)
 
 tissue <- "Uterus"
 ##in/out directories
-tile_features =vroom(paste0("/X/Allal/RNAPath/tile_features_balanced_classes_1000/balanced_tile_features_",tissue, "_1000.csv"))
+tile_features =vroom(paste0("../00.Data/2000_subset_balanced_tile_features_",tissue, "_1000.csv"))
 
 # Subsampling the dataframe
 downsampling <- function(tile_features, n_tiles) {
@@ -50,8 +50,8 @@ tile_features <- mean_features(tile_features)
 dim(tile_features)
 endometrium_slides <- tile_features$slide_name[tile_features$label == "endometrium"]
 
-
-only_myometrium_id <- readRDS('/X/Laura/03.Image_processing/Second_filtering_images/Uterus_filtered_myometrium_images.rds')
+#SUbset the images to the only_myometrium ones in case we need it
+only_myometrium_id <- readRDS('/Uterus_filtered_myometrium_images.rds')
 
 only_myometrium_id <- only_myometrium_id$Subject.ID
 
@@ -62,15 +62,14 @@ only_myometrium_id <- only_myometrium_id$Subject.ID
 tile_features <- tile_features[!(str_extract(tile_features$slide_name, "GTEX-\\w+") %in% only_myometrium_id), ]
 
 
-
-plot_dir <- paste0("/X/Allal/Differential_expression/variance_partition/plots/downsampled_uterus","/", tissue)
+plot_dir <- paste0("/variance_partition/plots/downsampled_uterus","/", tissue)
 
 # Create the directory if it does not exist
 if (!dir.exists(plot_dir)) {
   dir.create(plot_dir, recursive = TRUE)  # recursive=TRUE ensures parent directories are also created
 }
 
-results_dir <- paste0("/X/Allal/Differential_expression/variance_partition/results/downsampled_uterus","/", tissue)
+results_dir <- paste0("/variance_partition/results/downsampled_uterus","/", tissue)
 
 if (!dir.exists(results_dir)) {
   dir.create(results_dir, recursive = TRUE)  # recursive=TRUE ensures parent directories are also created
@@ -78,16 +77,15 @@ if (!dir.exists(results_dir)) {
 
 
 
-GTEx_Subject_Phenotypes.GRU <- read.csv('/X/Laura/00.Data/GTEx_Subject_Phenotypes.GRU.csv', sep = '\t', header = TRUE)
+GTEx_Subject_Phenotypes.GRU <- read.csv('../00.Data/SIMULATED_Subject_Phenotypes.GRU.csv', sep = '\t', header = TRUE)
 
+#metadata files, as well as Subject_Phenotypes.GRU.csv contains Donor's metadata
 
 if (tissue %in% c("Ectocervix", "Endocervix")) {
-  metadata <- readRDS(paste0("/X/Ole/tissues/v10/Cervix", tissue, "/metadata.rds"))
+  metadata <- readRDS(paste0("../00.Data/Cervix", tissue, "/metadata.rds"))
 } else {
-  metadata <- readRDS(paste0("/X/Ole/tissues/v10/", tissue, "/metadata.rds"))
+  metadata <- readRDS(paste0("../00.Data/SIMULATED_", tissue, "_metadata.rds"))
 }
-
-
 
 
 #tile_features <- vroom(paste0("/X/Allal/RNAPath/tile_features_balanced_classes_100/balanced_tile_features_Ovary_no_follicles.csv"))
@@ -115,7 +113,7 @@ tile_features$age = GTEx_Subject_Phenotypes.GRU$AGE[match(tile_features$gtex, GT
 
 #smaller validation set 
 if (tissue %in% c("Uterus", "Vagina", "Ovary")){
-  filtered_images = readRDS(paste0("/X/Laura/03.Image_processing/Second_filtering_images/",tissue,"_final_filtered_images.rds"))
+  filtered_images = readRDS(paste0("../00.Data/", tissue,"_final_filtered_images.rds"))
   tile_features = tile_features[tile_features$gtex %in% filtered_images$Subject.ID,]
 }
 
@@ -129,10 +127,8 @@ tile_features$age = GTEx_Subject_Phenotypes.GRU$AGE[match(tile_features$gtex, GT
 tile_features$HardyScale = GTEx_Subject_Phenotypes.GRU$DTHHRDY[match(tile_features$gtex, GTEx_Subject_Phenotypes.GRU$SUBJID)]
 tile_features$IschemicTime = GTEx_Subject_Phenotypes.GRU$TRDNISCH[match(tile_features$gtex, GTEx_Subject_Phenotypes.GRU$SUBJID)]
 tile_features$bmi = GTEx_Subject_Phenotypes.GRU$BMI[match(tile_features$gtex, GTEx_Subject_Phenotypes.GRU$SUBJID)]
-ancestry_file<- read.table(paste0("/X/Laura/00.Data/admixture_inferred_ancestry.txt"))
- ances<-ancestry_file[,c(1,3)]
- colnames(ances)<- c("Donor", "Ancestry")
-tile_features$ancestry = ances$Ancestry[match(tile_features$gtex,ances$Donor)]
+ancestry_file<- read.table(paste0("SIMULATED_admixture_inferred_ancestry.txt"))
+tile_features$ancestry = ancestry_file$Ancestry[match(tile_features$gtex,ancestry_file$Donor)]
 subtissues = unique(tile_features$label)
 traits = c('bmi', 'ancestry', 'age', 'IschemicTime', 'HardyScale', 'gtex')
 
@@ -161,10 +157,10 @@ process_subtissue <- function(subtissue) {
   vp <- sortCols(varPart)
   pl <- plotVarPart(vp)
   
-  saveRDS(vp, file = paste0("/X/Allal/Differential_expression/variance_partition/results/downsampled_uterus","/", tissue, "/", subtissue, ".rds"))
+  saveRDS(vp, file = paste0("/variance_partition/results/downsampled_uterus","/", tissue, "/", subtissue, ".rds"))
   
   ggsave(
-    paste0("/X/Allal/Differential_expression/variance_partition/plots/downsampled_uterus","/", tissue, "/", subtissue, "_plot.svg"),
+    paste0("/variance_partition/plots/downsampled_uterus","/", tissue, "/", subtissue, "_plot.svg"),
     plot = pl,
     device = "svg",
     width = 10,

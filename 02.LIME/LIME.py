@@ -12,13 +12,13 @@ from skimage.segmentation import mark_boundaries
 from matplotlib import cm
 from matplotlib.colors import ListedColormap
 
-workdir='~/X/Laura/05.CNN/'
+workdir='../01.CNNs/'
 tissue = 'Vagina'
 num_classes = 2
 class_labels = ["0", "1"]
 
 #Load pretrained VGG19 model
-model = torch.load(workdir+'_pretrained_vgg19_bn.pt')
+model = torch.load(workdir+'pretrained_vgg19_bn.pt')
 
 fc_inputs = model.classifier[6].in_features
 model.classifier[6] = torch.nn.Sequential(
@@ -29,7 +29,7 @@ model.classifier[6] = torch.nn.Sequential(
     torch.nn.LogSoftmax(dim=1) # For using NLLLoss()
     )
 #Load out tissue model
-model.load_state_dict(torch.load('~/X/Laura/05.CNN/35yo_separation_FEMALE/Vagina/ACCtile_hybrid_tile_256_0.001_0.4_0.001_0.4_15_Vagina_trained_model_vgg19_bn_1024RSM.pt'))
+model.load_state_dict(torch.load('hybrid_tile_256_Vagina_trained_model_vgg19_bn_1024RSM.pt'))
 model.eval()
 
 
@@ -42,7 +42,7 @@ transform = transforms.Compose([
 
 
 # Load and preprocess an image for interpretation
-image_path = "~/X/Laura/05.CNN/35yo_separation_FEMALE/Vagina/Tiles512_05/validationset/val/GTEX-14PHW-2325_066.png"
+image_path = "GTEX-11P81-2125_126.png"
 image = Image.open(image_path).convert('RGB')
 preprocessed_image = transform(image)
 print(preprocessed_image.size())
@@ -97,10 +97,10 @@ temp = temp.astype(np.uint8)
 explanation_image = Image.fromarray(temp).convert('RGBA')
 
 # Save the explanation image to a file
-output_path = "~/X/Laura/06.LIME/Vagina/old/explained_back.png"
+output_path = "explained_back.png"
 explanation_image.save(output_path)
 
-output_path2 = "~/X/Laura/06.LIME/Vagina/old/explained2_only_mask.png"
+output_path2 = "explained2_only_mask.png"
 img_boundry = mark_boundaries(preprocessed_image[0], mask, color=(1, 0, 0))
 img_boundry = Image.fromarray((img_boundry * 255).astype(np.uint8))
 img_boundry.save(output_path2)
@@ -125,7 +125,7 @@ heatmap_colored = cmap(heatmap_normalized)
 heatmap_image = Image.fromarray((heatmap_colored * 255).astype(np.uint8), mode='RGBA')
 
 # Save the heatmap image to a file
-output_path3 = "~/X/Laura/LIME/Vagina/old/heatmap.png"
+output_path3 = "heatmap.png"
 heatmap_image.save(output_path3)
 
 print(f"Heatmap image saved at {output_path3}")

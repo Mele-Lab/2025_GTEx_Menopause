@@ -10,16 +10,12 @@ library(ggplot2)
 library(edgeR)
 library(readxl)
 
+
 tissues<- c("Uterus", "Ovary", "Vagina", "BreastMammaryTissue", "FallopianTube", "CervixEctocervix", "CervixEndocervix")
 
-if (getwd()== "/X/Laura" ){
-    input<-"/X/"
-}else{
-  input<-"X/GTEx_v8/"
-  
-}
+input<-"./"
 
-log_file<-paste0(input, "Laura/MOFA/log_file_training2.txt")
+log_file<-paste0(input, "log_file_training2.txt")
 log_message <- function(message) {
   cat(paste(Sys.time(), "-", message, "\n"), file = log_file, append = TRUE)
 }
@@ -34,7 +30,7 @@ log_message(paste0("Option: ", option, "\n"))
 for (tissue in tissues){
     log_message(paste0("----Model for ", tissue, "\n"))
     
-      if (getwd()== "/X/Laura" ){
+     
         log_message("----Reading feature data----\n")
         
           ###Preprocess feature data
@@ -42,8 +38,8 @@ for (tissue in tissues){
             features<- read.csv(paste0(input, "/Allal/RNAPath/tile_features_balanced_classes_1000/balanced_tile_features_Ectocervix_1000.csv"))
           }else if  (tissue== "CervixEndocervix"){
             features<- read.csv(paste0(input, "/Allal/RNAPath/tile_features_balanced_classes_1000/balanced_tile_features_Endocervix_1000.csv"))
-          }else{
-            features<- read.csv(paste0(input, "/Allal/RNAPath/tile_features_balanced_classes_1000/balanced_tile_features_", tissue, "_1000.csv"))
+          }else{ #Example set for uterus
+            features<- read.csv(paste0("../00.Data/2000_subset_balanced_tile_features_", tissue, "_1000.csv"))
             
           }
         
@@ -51,7 +47,7 @@ for (tissue in tissues){
           features$Donor<-as.factor(features$Donor)
           
           #Leave only the donors that passed the filter 
-          filter<-readRDS(paste0(input, "/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
+          filter<-readRDS("../00.Data/",tissue, "_final_filtered_images.rds")
           features<-features[levels(features$Donor) %in% filter$Subject.ID,]
           features$slide_name<-NULL
           features$tile_number<-NULL
@@ -119,16 +115,13 @@ for (tissue in tissues){
           log_message("----Reading gene expression data----\n")
   
           ###Read and normalize gene expression data
-          counts_tot <- readRDS(paste0(input,"/Laura/00.Data/v10/", tissue, "/counts.rds"))
-          tpm_tot <- readRDS(paste0(input,"/Laura/00.Data/v10/", tissue, "/tpm.rds"))
-          metadata_tot <- readRDS(paste0(input, "/Laura/00.Data/v10/", tissue, "/metadata.rds"))
-          
+          counts_tot <- readRDS(paste0("../00.Data/SIMULATED_", tissue, "_counts.rds"))
+          tpm_tot <- readRDS(paste0("../00.Data/SIMULATED_", tissue, "/tpm.rds"))
+          metadata_tot <- readRDS(paste0("../00.Data/SIMULATED_", tissue, "/metadata.rds"))
           #For using continuous ancestry as a covariate (otherwise we use it as a categorical variable)
           metadata_tot$Ancestry<- NULL
-          ancestry_file<- read.table(paste0(input,"/Laura/00.Data/admixture_inferred_ancestry.txt"))
-          ances<-ancestry_file[,c(1,3)]
-          colnames(ances)<- c("Donor", "Ancestry")
-          metadata_tot<-merge(metadata_tot, ances, by= "Donor")
+          ancestry_file<- read.table("../00.Data/SIMULATED_admixture_inferred_ancestry.txt")
+          metadata_tot<-merge(metadata_tot, ancestry_file, by= "Donor")
           metadata<- metadata_tot[metadata_tot$Donor %in% filter$Subject.ID,]
           counts <- counts_tot[, metadata$Sample]
           tpm<-tpm_tot[, metadata$Sample]
@@ -146,7 +139,7 @@ for (tissue in tissues){
                                    exprs_genes.counts) 
           
           # Exclude chrY genes in female-only tissues
-          gene_annotation  <- read.csv(paste0(input, "/Laura/00.Data/gencode.v39.annotation.bed"))
+          gene_annotation  <- read.csv("../00.Data/gencode.v39.annotation.bed")
           Y_genes <- gene_annotation[gene_annotation$chr=="chrY",]$ensembl.id
           exprs_genes <- exprs_genes[!exprs_genes %in% Y_genes]
           
@@ -242,10 +235,10 @@ for (tissue in tissues){
           )
           log_message("----Saving the model----\n")
           
-          MOFAobject_trained<-run_mofa(MOFAobject, outfile=paste0(input,"/Laura/MOFA/MOFA_", tissue, "_",option,"_",model_opts$num_factors,"_ensg.hdf5"), use_basilisk = TRUE)
-          saveRDS(MOFAobject_trained,paste0(input, "/Laura/MOFA/MOFA_", tissue, "_", option,"_",model_opts$num_factors,"_ensg.rds"))
+          MOFAobject_trained<-run_mofa(MOFAobject, outfile=paste0(input,"/MOFA_", tissue, "_",option,"_",model_opts$num_factors,"_ensg.hdf5"), use_basilisk = TRUE)
+          saveRDS(MOFAobject_trained,paste0(input, "/MOFA_", tissue, "_", option,"_",model_opts$num_factors,"_ensg.rds"))
   
-      }
+      
 }
 
 

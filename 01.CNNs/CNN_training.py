@@ -35,12 +35,12 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
 # Paths and directories
-workdir = '/X/Laura/05.CNN/35yo_separation_FEMALE/'
+workdir = 'data_examples/'
 tissue = 'Uterus'
 
 # Set train and test paths
-train_directory = workdir+tissue+'/Tiles512_05/train/'
-test_directory = workdir+tissue+'/Tiles512_05/test/'
+train_directory = workdir+tissue+'/train/'
+test_directory = workdir+tissue+'/test/'
 
 gamma_values = [0.3,0.4, 0.5, 0.6,0.7, 0.8]
 drop_values = [0.3,0.4, 0.5]
@@ -132,7 +132,7 @@ for gamma, drop in param_combinations:
     }
     
     # Load pre-trained model
-    model = torch.load('/X/Laura/05.CNN/pretrained_vgg19_bn.pt')
+    model = torch.load('pretrained_vgg19_bn.pt')
     model.eval()
     
     # Freeze model parameters

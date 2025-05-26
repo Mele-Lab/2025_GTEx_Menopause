@@ -13,7 +13,7 @@ library("MOFAdata")
 
 
 
-gene_annotation  <- read.csv("~/X/Laura/00.Data/gencode.v39.annotation.bed")
+gene_annotation  <- read.csv("../00.Data/gencode.v39.annotation.bed")
 
 # Retrieve entrez id
 entrez.id <- idMapping(organism = "hsapiens",
@@ -31,7 +31,7 @@ gene_annotation$entrez.id <- sapply(sub("\\..*", "", gene_annotation$ensembl.id)
 
 tissue<-"Vagina"
 
-MOFAobject_trained<-readRDS(paste0(input, "/Laura/MOFA/MOFA_", tissue, "_only_matching_donors_10_ensg_CORRECTED.rds"))
+MOFAobject_trained<-readRDS(paste0("/MOFA_", tissue, "_only_matching_donors_10_ensg_CORRECTED.rds"))
 
 p<-plot_top_weights(MOFAobject_trained,
                     view = "gene_expression",
@@ -71,7 +71,7 @@ gsea_simplified <- simplify(gsea_result,
 
 # View the simplified result
 r<-gsea_simplified@result[gsea_simplified@result$p.adjust<0.05, c("Description","setSize", "enrichmentScore", "NES", "p.adjust")]
-saveRDS(r, paste0("X/Laura/12.Tissues_substructures/Enrichment/Enrichments_GSEA/gsea_", tissue, "_goterms_MOFA.rds"))
+saveRDS(r, paste0("/gsea_", tissue, "_goterms_MOFA.rds"))
 
 r_down<-r[r$NES<0,]
 
@@ -103,6 +103,3 @@ plot_upregulated <- ggplot(r_down, aes(x = NES, y = reorder(Description, NES), c
         # Add full border
   )
 
-pdf(paste0("~/X/Laura/MOFA/Plots/",tissue, "_enrichment_factor4_down_PAPER.pdf"), width = 8, height = 4)  # Adjust width and height as needed
-plot_upregulated
-dev.off()

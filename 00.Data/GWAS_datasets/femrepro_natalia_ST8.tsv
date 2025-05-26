@@ -1,0 +1,197 @@
+Supplementary Table 8. Prioritisation of candidate genes for lead signals using the Open Targets Genetics database					
+Phenotype ICD-10 Code	Phenotype name	rsID	Top 3 Candidate Genes (OpenTargetsGenetics v8)		
+C53	Malignant neoplasm of cervix uteri	rs401681	CLPTM1L	TERT	SLC6A19
+C53	Malignant neoplasm of cervix uteri	rs36214159	HLA-DQA1	HLA-DQB1	HLA-DRA
+C53	Malignant neoplasm of cervix uteri	rs9747973	GSDMB	PGAP3	ZPBP2
+C56	Malignant neoplasm of ovary	rs146344777	NPAS3		
+D25	Leiomyoma of uterus	rs3820282	CDC42	WNT4	HSPG2
+D25	Leiomyoma of uterus	rs905938	DCST2	ZBTB7B	SHC1
+D25	Leiomyoma of uterus	rs7522710	ADSS2	C1orf100	ZBTB18
+D25	Leiomyoma of uterus	rs1865573	GREB1	ROCK2	E2F6
+D25	Leiomyoma of uterus	rs73915877	TRIB2	NTSR2	LPIN1
+D25	Leiomyoma of uterus	rs4665290	DNMT3A	POMC	DNAJC27
+D25	Leiomyoma of uterus	rs11127140	BABAM2	FOSL2	PLB1
+D25	Leiomyoma of uterus	rs72785601	BIRC6	TTC27	TTC27
+D25	Leiomyoma of uterus	rs17631680	MEIS1		
+D25	Leiomyoma of uterus	rs12475639	REV1	LYG1	TSGA10
+D25	Leiomyoma of uterus	rs3804984	ITPR1	BHLHE40	SUMF1
+D25	Leiomyoma of uterus	rs7624086	ATG7	HRH1	VGLL4
+D25	Leiomyoma of uterus	rs35446936	ACTRT3	LRRC34	MYNN
+D25	Leiomyoma of uterus	rs35430985	IGF2BP2	TRA2B	SENP2
+D25	Leiomyoma of uterus	rs150753801	COMMD8	ATP10D	CORIN
+D25	Leiomyoma of uterus	rs190042440	TEC	TXK	CNGA1
+D25	Leiomyoma of uterus	rs114672778	RASL11B	ERVMER34-1	USP46
+D25	Leiomyoma of uterus	rs113828443	KDR	PDCL2	SRD5A3
+D25	Leiomyoma of uterus	rs1220703	SULT1B1	SULT1E1	CSN1S1
+D25	Leiomyoma of uterus	rs12374261	EIF4E	METAP1	ADH5
+D25	Leiomyoma of uterus	rs10069690	TERT	CLPTM1L	SLC6A18
+D25	Leiomyoma of uterus	rs72801474	HSPA4	SLC22A5	AFF4
+D25	Leiomyoma of uterus	rs6920453	RAB44	ETV7	SRSF3
+D25	Leiomyoma of uterus	rs4708089	CD109	COL12A1	COX7A2
+D25	Leiomyoma of uterus	rs12193858	ARMC2	SESN1	FOXO3
+D25	Leiomyoma of uterus	rs71575922	SYNE1	ARMT1	ZBTB2
+D25	Leiomyoma of uterus	rs79857163	AGPAT4	MAP3K4	PACRG
+D25	Leiomyoma of uterus	rs4730774	CFTR	WNT2	ASZ1
+D25	Leiomyoma of uterus	rs67679138	TSPAN12	ING3	CPED1
+D25	Leiomyoma of uterus	rs7006399	NCOA2	XKR9	TRAM1
+D25	Leiomyoma of uterus	rs145848128	KANK1	DMRT1	DMRT3
+D25	Leiomyoma of uterus	rs796075	ARHGAP12	ZEB1	KIF5B
+D25	Leiomyoma of uterus	rs193097753	STN1	SH3PXD2A	SLK
+D25	Leiomyoma of uterus	rs7114102	BET1L	PSMD13	IFITM2
+D25	Leiomyoma of uterus	rs74485684	ARL14EP	FSHB	KCNA4
+D25	Leiomyoma of uterus	rs11031731	CCDC73	WT1	RCN1
+D25	Leiomyoma of uterus	rs387619	APIP	CD44	PDHX
+D25	Leiomyoma of uterus	rs559928	RPS6KA4	CCDC88B	TRPT1
+D25	Leiomyoma of uterus	rs73006241	ACAT1	NPAT	CUL5
+D25	Leiomyoma of uterus	rs10891420	NCAM1	PLET1	PTS
+D25	Leiomyoma of uterus	rs1986231	WNK1	RAD52	NINJ2
+D25	Leiomyoma of uterus	rs10748447	SLC38A1	SLC38A2	SCAF11
+D25	Leiomyoma of uterus	rs7981022	PTPRR	PTPRB	MYRFL
+D25	Leiomyoma of uterus	rs855202	IGF1	PMCH	PAH
+D25	Leiomyoma of uterus	rs117245733	WBP4	FOXO1	COG6
+D25	Leiomyoma of uterus	rs9549258	MRPS31	FOXO1	SLC25A15
+D25	Leiomyoma of uterus	rs1239681	DLEU7	RNASEH2B	KCNRG
+D25	Leiomyoma of uterus	rs1256044	ESR2	SYNE2	MTHFD1
+D25	Leiomyoma of uterus	rs28540247	MAP2K5	PIAS1	CALML4
+D25	Leiomyoma of uterus	rs28522005	ITGA11	PIAS1	CLN6
+D25	Leiomyoma of uterus	rs1019814	TTC28	NPIPB2	RSL1D1
+D25	Leiomyoma of uterus	rs200315340	MYH11	MARF1	NDE1
+D25	Leiomyoma of uterus	rs13338387	HEATR3	TENT4B	CNEP1R1
+D25	Leiomyoma of uterus	rs12325192	HNRNPA1L3	SALL1	
+D25	Leiomyoma of uterus	rs78378222	TP53	ATP1B2	TNFSF12
+D25	Leiomyoma of uterus	rs12962403	ENOSF1	TYMS	CETN1
+D25	Leiomyoma of uterus	rs10415826	ZNF257	ZNF208	ZNF676
+D25	Leiomyoma of uterus	rs16991615	MCM8	CRLS1	TRMT6
+D25	Leiomyoma of uterus	rs34161672	RBM38	HMGB1P1	RAE1
+D25	Leiomyoma of uterus	rs41308088	RTEL1	STMN3	RTEL1-TNFRSF6B
+D25	Leiomyoma of uterus	rs191767420	XBP1	CCDC117	CHEK2
+D25	Leiomyoma of uterus	rs112251865	TNRC6B	ADSL	SGSM3
+D25	Leiomyoma of uterus	rs4997204	TBL1X	FAM9B	FAM9A
+D25	Leiomyoma of uterus	rs6725	JADE3	RGN	NDUFB11
+D25	Leiomyoma of uterus	rs13441058	TEX11	SLC7A3	FOXO4
+D25	Leiomyoma of uterus	rs2811702	FRMD7	RAP2C	STK26
+E28.2	Polycystic ovarian syndrome	rs7563201	PLEKHH2	ZFP36L2	THADA
+E28.2	Polycystic ovarian syndrome	rs7578655	MSH6	FOXN2	PPP1R21
+E28.2	Polycystic ovarian syndrome	rs13427822	ERBB4		
+E28.2	Polycystic ovarian syndrome	rs4705862	IRF1	P4HA2	RAD50
+E28.2	Polycystic ovarian syndrome	rs3729853	NEIL2	CTSB	BLK
+E28.2	Polycystic ovarian syndrome	rs7030193	DENND1A	LHX2	NEK6
+E28.2	Polycystic ovarian syndrome	rs11031002	ARL14EP	FSHB	KCNA4
+E28.2	Polycystic ovarian syndrome	rs1672716	NNMT	ZBTB16	HTR3A
+E28.2	Polycystic ovarian syndrome	rs1824982	GLIPR1L2	GLIPR1	GLIPR1L1
+E28.2	Polycystic ovarian syndrome	rs17879961	CHEK2	XBP1	CCDC117
+E28.2	Polycystic ovarian syndrome	rs562567873	C22orf42	RFPL2	SLC5A4
+N72	Inflammatory disease of cervix uteri	rs1049137	PAX8	PSD4	IL1RN
+N80	Endometriosis	rs56318008	CDC42	WNT4	C1QB
+N80	Endometriosis	rs57439315	GREB1	ROCK2	E2F6
+N80	Endometriosis	rs6546324	ETAA1	C1D	
+N80	Endometriosis	rs62172421	TFPI	CALCRL	FAM171B
+N80	Endometriosis	rs9312656	KDR	SRD5A3	CLOCK
+N80	Endometriosis	rs7728894	ARHGAP26	FGF1	SPRY4
+N80	Endometriosis	rs3012577	CD109	SLC17A5	EEF1A1
+N80	Endometriosis	rs7766106	RSPO3	RNF146	ECHDC1
+N80	Endometriosis	rs13211170	SYNE1	MYCT1	VIP
+N80	Endometriosis	rs2779747	CDKN2B	CDKN2A	MTAP
+N80	Endometriosis	rs11031005	ARL14EP	FSHB	KCNA4
+N80	Endometriosis	rs7966079	VEZT	FGD6	NDUFA12
+N80	Endometriosis	rs10860857	WASHC3	DRAM1	NUP37
+N81	Female genital prolapse	rs3820282	CDC42	WNT4	HSPG2
+N81	Female genital prolapse	rs1935050	PLPP3	PRKAA2	
+N81	Female genital prolapse	rs3072	LDAH	GDF7	HS1BP3
+N81	Female genital prolapse	rs11899888	EFEMP1	CLHC1	CFAP36
+N81	Female genital prolapse	rs28403275	(no data)		
+N81	Female genital prolapse	rs139406060	ADAMTS16		
+N81	Female genital prolapse	rs1366430	ADAMTS16	ICE1	
+N81	Female genital prolapse	rs6897617	CPEB4	C5orf47	NSG2
+N81	Female genital prolapse	rs10786611	MRPL43	LZTS2	SLF2
+N81	Female genital prolapse	rs5030268	EIF3M	WT1	PRRG4
+N81	Female genital prolapse	rs4944057	POLD3	PGM2L1	CHRDL2
+N81	Female genital prolapse	rs2701109	TBX5	RBM19	RBM19
+N81	Female genital prolapse	rs12325192	HNRNPA1L3	SALL1	
+N81	Female genital prolapse	rs2267375	MAFF	PLA2G6	TMEM184B
+N83.0 | N83.1 | N83.2	Ovarian cyst, including follicular cyst, corpus luteum cyst, and other/unspecified ovarian cyst	rs71648550	EDN2	FOXO6	SCMH1
+N83.0 | N83.1 | N83.2	Ovarian cyst, including follicular cyst, corpus luteum cyst, and other/unspecified ovarian cyst	rs34777525	NR5A2	ZNF281	
+N83.0 | N83.1 | N83.2	Ovarian cyst, including follicular cyst, corpus luteum cyst, and other/unspecified ovarian cyst	rs10472094	PDE4D		
+N83.0 | N83.1 | N83.2	Ovarian cyst, including follicular cyst, corpus luteum cyst, and other/unspecified ovarian cyst	rs7769632	ID4	MBOAT1	
+N83.0 | N83.1 | N83.2	Ovarian cyst, including follicular cyst, corpus luteum cyst, and other/unspecified ovarian cyst	rs12415148	STN1	SFR1	CFAP43
+N83.0 | N83.1 | N83.2	Ovarian cyst, including follicular cyst, corpus luteum cyst, and other/unspecified ovarian cyst	rs11031005	ARL14EP	FSHB	KCNA4
+N83.0 | N83.1 | N83.2	Ovarian cyst, including follicular cyst, corpus luteum cyst, and other/unspecified ovarian cyst	rs4140413	WT1	EIF3M	PRRG4
+N83.0 | N83.1 | N83.2	Ovarian cyst, including follicular cyst, corpus luteum cyst, and other/unspecified ovarian cyst	rs369378118	PAK4	RPS16	DLL3
+N83.0 | N83.1 | N83.2	Ovarian cyst, including follicular cyst, corpus luteum cyst, and other/unspecified ovarian cyst	rs186430430	CHEK2	CCDC117	HSCB
+N83.0 | N83.1 | N83.2	Ovarian cyst, including follicular cyst, corpus luteum cyst, and other/unspecified ovarian cyst	rs4829169	NR0B1	MAGEB4	MAGEB1
+N84	Polyp of female genital tract	rs12751005	NFIA		
+N84	Polyp of female genital tract	rs1702136	EEFSEC	RPN1	DNAJB8
+N84	Polyp of female genital tract	rs2865375	BMPR1B	PDLIM5	HPGDS
+N84	Polyp of female genital tract	rs7705526	TERT	CLPTM1L	SLC6A18
+N84	Polyp of female genital tract	rs7728894	ARHGAP26	FGF1	SPRY4
+N84	Polyp of female genital tract	rs800578	TRPS1		
+N84	Polyp of female genital tract	rs193097753	STN1	SH3PXD2A	SLK
+N84	Polyp of female genital tract	rs2277339	PRIM1	STAT6	HSD17B6
+N84	Polyp of female genital tract	rs77478686	NAA16	MTRF1	KBTBD7
+N84	Polyp of female genital tract	rs2967684	ACTL9	NFILZ	ADAMTS10
+N86	Erosion and ectropion of cervix uteri	rs11903198	LDAH	GDF7	HS1BP3
+N86	Erosion and ectropion of cervix uteri	rs4849169	PSD4	PAX8	IL1RN
+N86	Erosion and ectropion of cervix uteri	rs138832612	PRRX2	PTGES	ASB6
+N86	Erosion and ectropion of cervix uteri	rs10445377	SNX11	SKAP1	COPZ2
+N87	Dysplasia of cervix uteri	rs10737462	CDC42	WNT4	CELA3A
+N87	Dysplasia of cervix uteri	rs11123172	PAX8	PSD4	IL1F10
+N87	Dysplasia of cervix uteri	rs6866294	CLPTM1L	LPCAT1	TERT
+N87	Dysplasia of cervix uteri	rs28718232	HLA-DQA2	HLA-DRB1	HLA-DQB1
+N91.0 | N91.1 | N91.2	Amenorrhea, including primary amenorrhea, secondary amenorrhea and unspecified amenorrhea	rs11031002	ARL14EP	FSHB	KCNA4
+N92	Excessive, frequent and irregular menstruation	rs6025	F5	METTL18	C1orf112
+N92	Excessive, frequent and irregular menstruation	rs1735537	EEFSEC	RPN1	DNAJB8
+N92	Excessive, frequent and irregular menstruation	rs1472597	IL1RAP	TMEM207	GMNC
+N92	Excessive, frequent and irregular menstruation	rs4467574	BMPR1B	PDLIM5	HPGDS
+N92	Excessive, frequent and irregular menstruation	rs2762340	ANKS1A	TCP11	DEF6
+N92	Excessive, frequent and irregular menstruation	rs954238	CCDC170	RMND1	ARMT1
+N92	Excessive, frequent and irregular menstruation	rs584336	ZBTB2	ARMT1	RMND1
+N92	Excessive, frequent and irregular menstruation	rs78602818	BORCS7	ATP5MK	CNNM2
+N92	Excessive, frequent and irregular menstruation	rs11031005	ARL14EP	FSHB	KCNA4
+N92	Excessive, frequent and irregular menstruation	rs7974900	BHLHE41	SSPN	RASSF8
+N97.0	Female infertility associated with anovulation	rs4944654	TMEM135	FZD4	PRSS23
+N97.8	Female infertility of other origin	rs12037376	CDC42	WNT4	HSPG2
+N97.8	Female infertility of other origin	rs1422	PKHD1L1	EBAG9	NUDCD1
+O00	Ectopic pregnancy	rs4971091	EFNA1	MUC1	THBS3
+O00	Ectopic pregnancy	rs11598956	ASB13	TASOR2	CALML3
+O12	Gestational oedema and proteinuria without hypertension	rs779463	ADGRB3		
+O13	Gestational hypertension	rs143439093	MTHFR	CLCN6	MFN2
+O13	Gestational hypertension	rs16998073	FGF5	PRDM8	CFAP299
+O13	Gestational hypertension	rs12656497	NPR3	SUB1	ZFR
+O13	Gestational hypertension	rs7139122	MFSD5	CSAD	PFDN5
+O13	Gestational hypertension	rs167479	RGL3	TSPAN16	DOCK6
+O13	Gestational hypertension	rs2208589	PREX1	ARFGEF2	CSE1L
+O13	Gestational hypertension	rs74715624	PRELID3B	CTSZ	ZNF831
+O14	Pre-eclampsia	rs16998073	FGF5	PRDM8	CFAP299
+O20	Hemorrhage in early pregnancy	rs11657636	SRR	DPH1	SGSM2
+O24.4	Diabetes mellitus arising in pregnancy	rs1260326	GCKR	FNDC4	KRTCAP3
+O24.4	Diabetes mellitus arising in pregnancy	rs1402837	SPC25	G6PC2	NOSTRIN
+O24.4	Diabetes mellitus arising in pregnancy	rs17085675	PCSK1	ERAP2	CAST
+O24.4	Diabetes mellitus arising in pregnancy	rs9275599	HLA-DQA2	HLA-DRB1	HLA-DQA1
+O24.4	Diabetes mellitus arising in pregnancy	rs7756992	CDKAL1	E2F3	MBOAT1
+O24.4	Diabetes mellitus arising in pregnancy	rs11558471	SLC30A8	AARD	RAD21
+O24.4	Diabetes mellitus arising in pregnancy	rs10758593	GLIS3	SLC1A1	PLPP6
+O24.4	Diabetes mellitus arising in pregnancy	rs34872471	TCF7L2		
+O24.4	Diabetes mellitus arising in pregnancy	rs2237897	CDKN1C	NAP1L4	SLC22A18
+O24.4	Diabetes mellitus arising in pregnancy	rs1892925	FAT3		
+O24.4	Diabetes mellitus arising in pregnancy	rs10830963	MTNR1B	SLC36A4	DEUP1
+O24.4	Diabetes mellitus arising in pregnancy	rs76895963	CCND2	PARP11	TIGAR
+O24.4	Diabetes mellitus arising in pregnancy	rs74628648	(no data)		
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs2788095	PRDM16	ACTRT2	TTC34
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs75460349	ZDHHC18	PIGV	ARID1A
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs1260326	GCKR	FNDC4	KRTCAP3
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs6748810	ABCG8	ABCG5	DYNC2LI1
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs72623176	NOSTRIN	ABCB11	DHRS9
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs6788947	ACKR2	ZNF662	CYP8B1
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs10491431	IL7R	UGT3A1	CAPSL
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs7730596	ARHGEF28	ANKRA2	UTP15
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs9396784	FAM8A1	NUP153	TPMT
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs11977881	ABCB4	CROT	RUNDC3B
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs10107182	SDCBP	NSMAF	CYP7A1
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs9645500	HKDC1	SUPV3L1	VPS26A
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs28929474	SERPINA1	IFI27L2	IFI27
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs34491636	ENPP7	CBX8	CBX2
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs12984928	DMKN	TMEM147	ATP4A
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs296391	SULT2A1	CABP5	TPRX2
+O26.6	Liver disorders in pregnancy, childbirth and puerperium	rs1800961	HNF4A	TTPAL	FITM2
+O42	Premature rupture of membranes	rs4237901	SLC4A8	GALNT6	CELA1
+O60	Preterm labor and delivery	rs2946160	(no data)		

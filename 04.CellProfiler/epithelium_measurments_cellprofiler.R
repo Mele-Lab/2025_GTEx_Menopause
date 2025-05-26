@@ -3,31 +3,27 @@ library(ggplot2)
 library(ggsignif)
 library(gridExtra)
 
-input<-"X/GTEx_v8/"
-measures <- read.csv(paste0(input, "/Allal/CellProfiler/results/Vagina/newSecondaryFilteredVagina_Image.csv"))
+input<-"./"
+measures <- read.csv("newSecondaryFilteredVagina_Image.csv")
 median_value_columns <- c("FileName_Vagina","Median_FilterObjects_AreaShape_MinorAxisLength", "Median_FilterObjects_AreaShape_MinorAxisLength", "Median_FilterObjects_AreaShape_MinorAxisLength")
 image_median_values <- measures[,median_value_columns]
-#all_measures <- read.csv("X/Allal/CellProfiler/results/Vagina/newSecondaryFilteredVagina_FilterObjects.csv")
-#measures <- read.csv("thickness_measures/Vagina_epithelium_measures.csv")
-#metadata <- read.csv("X/Laura/00.Data/GTEx_Subject_Phenotypes.GRU.csv", sep = '\t')
+
 # Replace the suffix with an empty string
 image_median_values$FileName_Vagina <- sub("_binary_mask_class_epithelium_compressed\\.jpg$", "", measures$FileName_Vagina)
 image_median_values$FileName_Vagina <- sub("^([^-]+-[^-]+)-.*$", "\\1", image_median_values$FileName_Vagina)
 
 tissue<- "Vagina"
-metadata<-read.csv("~/X/GTEx_v8/Laura/00.Data/GTEx_Subject_Phenotypes.GRU.csv", sep="\t", header=TRUE)
 
-filter<-readRDS(paste0(input,"/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
+
+metadata<-read.csv("../00.Data/SIMULATED_Subject_Phenotypes.GRU.csv", sep="\t", header=TRUE)
+
+filter<-readRDS(paste0("../00.Data/", tissue, "_final_filtered_images.rds"))
 
 metadata<- metadata[metadata$SUBJID %in% filter$Subject.ID,]
 
-ancestry_file<- read.table(paste0(input,"/Laura/00.Data/admixture_inferred_ancestry.txt"))
-        ances<-ancestry_file[,c(1,3)]
-        colnames(ances)<- c("Donor", "Ancestry")
+ancestry_file<- read.table("SIMULATED_admixture_inferred_ancestry.txt")
 
-
-metadata <- merge(metadata,ancestry_file, by.x = "SUBJID", by.y = "V1", all.x = FALSE)
-
+metadata <- merge(metadata,ancestry_file, by.x = "SUBJID", by.y = "Donor", all.x = FALSE)
 
 
 # Read the GTEx filtered IDs from the text file
@@ -44,7 +40,7 @@ metadata <- merge(metadata,ancestry_file, by.x = "SUBJID", by.y = "V1", all.x = 
 # Merge AGE column from metadata into measures_filtered
 measures_filtered <- merge(
   image_median_values,
-  metadata[, c("SUBJID","AGE","BMI","DTHHRDY","TRISCH","COHORT","V2","V3","V4","V5","V6")],  # Keep only necessary columns from metadata
+  metadata[, c("SUBJID","AGE","BMI","DTHHRDY","TRISCH","COHORT","Ancestry")],  # Keep only necessary columns from metadata
   by.x = "FileName_Vagina",
   by.y = "SUBJID",
   all.x = FALSE  # Keep all rows from measures_filtered
@@ -132,7 +128,7 @@ head(measures_filtered$TRISCH)
 
 lm_model <- lm(
   Median_FilterObjects_AreaShape_MinorAxisLength ~ AGE + BMI + DTHHRDY + TRISCH + COHORT + 
-                                                    V2 ,
+                                                    Ancestry ,
   data = measures_filtered
 )
 

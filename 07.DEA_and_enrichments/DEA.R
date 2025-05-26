@@ -14,9 +14,9 @@ suppressMessages(library(car))
 args <- commandArgs(trailingOnly=TRUE)
 
 # Functions ####
-source("~/X/01.DEA/DEA_scripts/DEA_and_DSA.R_functions.R")
+source("./DEA_and_DSA.R_functions.R")
 
-gene_annotation  <- read.csv("~/X/00.Data/gencode.v39.annotation.bed")
+gene_annotation  <- read.csv("../00.Data/gencode.v39.annotation.bed")
 Y_genes <- gene_annotation[gene_annotation$chr=="chrY",]$ensembl.id
 
 # Tissue ----
@@ -40,35 +40,32 @@ total_results<-list()
 total_metrics<-list()
 tissue<-"Uterus"
 tissues<-c("CervixEndocervix", "CervixEctocervix", "FallopianTube")
+
 for (tissue in tissues){
   tests<-"all_cov_no_inter"
   test<-tests
   test<-"_subs_no_age"
 for (test in tests){
-  #FOR GTEx v8
-  # outpath <-paste0("~/X/12.Tissues_substructures/DEA/DEA_substructures_chronological_age/", tissue, "/Ancestry/", test, "/")
-  #FOR GTEx v10
-  outpath <-paste0("~/X/12.Tissues_substructures/DEA/DEA_v10/", tissue, "/", test, "/")
+  outpath <-paste0("./", tissue, "/", test, "/")
   print(paste0("---------------------Analyzing ", tissue, "---------------------"))
   print(paste0("## ", test, " ##"))
   if(!dir.exists(outpath)){dir.create(outpath, recursive = T)}
   
     # 1.1 Read in data ----
     #FOR GTEx v10
-    counts_tot <- readRDS(paste0("~/X/00.Data/v10/", tissue, "/counts.rds"))
-    tpm_tot <- readRDS(paste0("~/X/00.Data/v10/", tissue, "/tpm.rds"))
-    metadata_tot <- readRDS(paste0("~/X/00.Data/v10/", tissue, "/metadata.rds"))
+    counts_tot <- readRDS(paste0("../00.Data/", tissue, "/SIMULATED_counts.rds"))
+    tpm_tot <- readRDS(paste0("../00.Data/", tissue, "/SIMULATED_tpm.rds"))
+    metadata_tot <- readRDS(paste0("../00.Data/", tissue, "/SIMULATED_metadata.rds"))
     metadata_tot$Ancestry<- NULL
-    ancestry_file<- read.table("Desktop/TFM/bsc83671/GTEx_v8/Laura/00.Data/admixture_inferred_ancestry.txt")
-    ances<-ancestry_file[,c(1,3)]
-    colnames(ances)<- c("Donor", "Ancestry")
-    metadata_tot<-merge(metadata_tot, ances, by= "Donor")
+    ancestry_file<- read.table("../00.Data/SIMULATED_admixture_inferred_ancestry.txt")
+    metadata_tot<-merge(metadata_tot, ancestry_file, by= "Donor")
 
     sex <- "female"
-    filter<-readRDS(paste0("Desktop/TFM/bsc83671/GTEx_v8/Laura/03.Image_processing/Second_filtering_images/",tissue, "_final_filtered_images.rds"))
+    filter<-readRDS(paste0("../00.Data/",tissue, "_final_filtered_images.rds"))
     metadata<- metadata_tot[(metadata_tot$Donor %in% filter$Subject.ID),]
   
     #Read substructures' proportions
+    #Example data provided only for uterus!!
     if(tissue =="BreastMammaryTissue"){
       cell_prop<-read.csv(paste0("~/X/derived_proportions_Craig/", tissue, "/", tissue, "_pivot.csv"))
       substructures<- c("adipocyte", "lobule", "duct", "stroma", "nerve", "gynecomastoid_hyperplasia")
@@ -82,7 +79,7 @@ for (test in tests){
       substructures<- c("epithelium", "lamina_propria", "vessels", "stroma")
       
     }else if (tissue =="Uterus"){
-      cell_prop<-read.csv(paste0("~/X/12.Tissues_substructures/", tissue, "_pivot.csv"))
+      cell_prop<-read.csv(paste0("../00.Data/", tissue, "_pivot.csv"))
       substructures<- c("myometrium", "endometrium", "vessels")
       
     }else if (tissue =="CervixEndocervix"){
@@ -104,9 +101,6 @@ for (test in tests){
 
     counts <- counts_tot[, metadata$Sample]
     tpm<-tpm_tot[, metadata$Sample]
-    tissue_info <- readRDS("~/X/00.Data/Tissue_info.rds")
-    tissue_id <- tissue_info[tissue_info$tissue_ID==tissue,]$tissue_id
-  
 
     # 1.2 Genes expressed per tissue ----
     # 1.2.1 TPM>=1 in at least 20% of the tissue samples
@@ -162,7 +156,7 @@ for (test in tests){
           interaction_terms<-c()
         }
         if(test %in% c("all_cov_inter", "all_cov_no_inter")){
-          covariates <- c(substructures, peers, tec, "Adenomyosis")
+          covariates <- c(substructures, peers, tec)
         }else{
           covariates <- c(sub, peers, tec)
         }
@@ -247,8 +241,6 @@ for (test in tests){
         }
       }
 
-      # saveRDS(dea_res,
-      #          paste0("~/X/12.Tissues_substructures/DEA/DEA_v10/",tissue,"_onlyepithelium_covariates_and_traits.results.rds"))
       if (test =="all_cov_no_inter"){
         saveRDS(dea_res,
                 paste0(outpath,tissue,"_", test, "_AGE_covariates_and_traits.results.rds"))
@@ -260,130 +252,7 @@ for (test in tests){
         print(paste0("# ---- saved file: ",tissue,"_", sub, "_",test, "_covariates_and_traits.results.rds", " ---- #") )
 
       }
-
-      degs_age_up = c()
-      degs_age_down = c()
-      degs_sub_up = c()
-      degs_sub_down = c()
-      degs_interaction_up = c()
-      degs_interaction_down = c()
-
-      #AGE-DEGs
-      dea_res_age<- dea_res$Age
-      degs_age<- dea_res_age[dea_res_age$adj.P.Val<0.05,]
-      nrow(degs_age)
-      degs_age_down<- nrow(dea_res_age[dea_res_age$adj.P.Val<0.05 & dea_res_age$logFC<0,])
-      degs_age_up<- nrow(dea_res_age[dea_res_age$adj.P.Val<0.05 & dea_res_age$logFC>0,])
-      
-      #SUBSTRUCTURES-DEGs
-      if(test =="all_cov_no_inter"){
-          dea_res_sub<- dea_res[[sub]]
-          degs_sub_down<- nrow(dea_res_sub[dea_res_sub$adj.P.Val<0.05 & dea_res_sub$logFC<0,])
-          degs_sub_up<- nrow(dea_res_sub[dea_res_sub$adj.P.Val<0.05 & dea_res_sub$logFC>0,])
-        sub_results <- list(
-          degs_age_up = degs_age_up,
-          degs_age_down = degs_age_down,
-          degs_sub_up = degs_sub_up,
-          degs_sub_down = degs_sub_down,
-          degs_interaction_up = degs_interaction_up,
-          degs_interaction_down = degs_interaction_down
-        )
-
-        # Add these results to the summary_results list under the current substructure name
-        summary_results[[sub]] <- sub_results
-
-      }else if(test =="one_cov_no_inter"){
-
-        dea_res_sub<- dea_res[[sub]]
-        degs_sub_down<- nrow(dea_res_sub[dea_res_sub$adj.P.Val<0.05 & dea_res_sub$logFC<0,])
-        degs_sub_up<- nrow(dea_res_sub[dea_res_sub$adj.P.Val<0.05 & dea_res_sub$logFC>0,])
-
-        sub_results <- list(
-          degs_age_up = degs_age_up,
-          degs_age_down = degs_age_down,
-          degs_sub_up = degs_sub_up,
-          degs_sub_down = degs_sub_down,
-          degs_interaction_up = degs_interaction_up,
-          degs_interaction_down = degs_interaction_down
-        )
-
-        # Add these results to the summary_results list under the current substructure name
-        summary_results[[sub]] <- sub_results
-
-
-      }else if(test=="one_cov_inter"){
-
-        dea_res_sub<- dea_res[[sub]]
-        degs_sub_down<- nrow(dea_res_sub[dea_res_sub$adj.P.Val<0.05 & dea_res_sub$logFC<0,])
-        degs_sub_up<- nrow(dea_res_sub[dea_res_sub$adj.P.Val<0.05 & dea_res_sub$logFC>0,])
-
-        dea_res_interaction<- dea_res[[name_inter]]
-        degs_interaction_down<- nrow(dea_res_interaction[dea_res_interaction$adj.P.Val<0.05 & dea_res_interaction$logFC<0,])
-        degs_interaction_up<- nrow(dea_res_interaction[dea_res_interaction$adj.P.Val<0.05 & dea_res_interaction$logFC>0,])
-
-        sub_results <- list(
-          degs_age_up = degs_age_up,
-          degs_age_down = degs_age_down,
-          degs_sub_up = degs_sub_up,
-          degs_sub_down = degs_sub_down,
-          degs_interaction_up = degs_interaction_up,
-          degs_interaction_down = degs_interaction_down
-        )
-
-        # Add these results to the summary_results list under the current substructure name
-        summary_results[[sub]] <- sub_results
-
-      }else if(test=="all_cov_inter"){
-        dea_res_sub<- dea_res[[sub]]
-        degs_sub_down<- nrow(dea_res_sub[dea_res_sub$adj.P.Val<0.05 & dea_res_sub$logFC<0,])
-        degs_sub_up<- nrow(dea_res_sub[dea_res_sub$adj.P.Val<0.05 & dea_res_sub$logFC>0,])
-
-        dea_res_interaction<- dea_res[[name_inter]]
-        degs_interaction_down<- nrow(dea_res_interaction[dea_res_interaction$adj.P.Val<0.05 & dea_res_interaction$logFC<0,])
-        degs_interaction_up<- nrow(dea_res_interaction[dea_res_interaction$adj.P.Val<0.05 & dea_res_interaction$logFC>0,])
-
-        sub_results <- list(
-          degs_age_up = degs_age_up,
-          degs_age_down = degs_age_down,
-          degs_sub_up = degs_sub_up,
-          degs_sub_down = degs_sub_down,
-          degs_interaction_up = degs_interaction_up,
-          degs_interaction_down = degs_interaction_down
-        )
-
-        # Add these results to the summary_results list under the current substructure name
-        summary_results[[sub]] <- sub_results
       }
-
-      }
-
-# Convert nested list to a data frame
-summary_df <- do.call(rbind, lapply(names(summary_results), function(sub) {
-  # Extract data for each substructure
-  data <- summary_results[[sub]]
-
-  # Create a named vector for each substructure with the counts
-  c(
-    Substructure = sub,
-    degs_age_up = data$degs_age_up,
-    degs_age_down = data$degs_age_down,
-    degs_sub_up = data$degs_sub_up,
-    degs_sub_down = data$degs_sub_down,
-    degs_adeno_up = data$degs_adeno_up,
-    degs_adeno_down = data$degs_adeno_down,
-    degs_interaction_up = data$degs_interaction_up,
-    degs_interaction_down = data$degs_interaction_down
-  )
-}))
-
-# Convert to a data frame
-summary_df <- as.data.frame(summary_df, stringsAsFactors = FALSE)
-
-# Convert numeric columns from character to numeric
-summary_df[-1] <- lapply(summary_df[-1], as.numeric)
-
-total_results[[test]]<-summary_df
 }
-
-all_tissues_results[[tissue]]<- total_results
 }
+   

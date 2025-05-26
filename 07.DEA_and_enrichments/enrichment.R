@@ -28,7 +28,12 @@ library(vroom)
 library(ggplot2)
 library(rrvgo)
 
-source("~/X/Laura/09.Functional_enrichment/Funcional_enrichments.R")
+source("Funcional_enrichments.R")
+
+#To run a toy example:
+#- Use the example file provided: Uterus_all_cov_no_inter_AGE_covariates_and_traits.results.rds
+#- analyses <- c("age")
+#- tissues<- "Uterus"
 
 ###1. Select the DEGs
 
@@ -39,7 +44,7 @@ tests<- c("all_cov_no_inter", "all_cov_inter", "one_cov_no_inter", "one_cov_inte
 tissues<-c("Uterus", "Ovary", "Vagina", "BreastMammaryTissue", "CervixEndocervix", "CervixEctocervix", "FallopianTube")
 analyses<-c("age","sub", "inter")
 
-gene_annotation  <- read.csv("~/X/Laura/00.Data/gencode.v39.annotation.bed")
+gene_annotation  <- read.csv("../00.Data/gencode.v39.annotation.bed")
 
 # Retrieve entrez id
 entrez.id <- idMapping(organism = "hsapiens",
@@ -66,13 +71,9 @@ calc_log_odds_ratio <- function(db) {
 }
 
 
-for (sex in sexes){
-  for (tissue in tissues){
-    inpath<-paste0("~/X/Laura/12.Tissues_substructures/DEA/DEA_v10/", tissue, "/")
-    if(!dir.exists(inpath)){dir.create(inpath, recursive = T)}
-    outpath <-paste0("~/X/Laura/12.Tissues_substructures/Enrichment/Enrichment_substructures_v10/", tissue, "/")
-    if(!dir.exists(outpath)){dir.create(outpath, recursive = T)}
-    
+
+for (tissue in tissues){
+    outpath <-"./"
     if(tissue =="BreastMammaryTissue"){
       substructures<- c("adipocyte", "lobule", "duct", "stroma", "nerve", "gynecomastoid_hyperplasia")
       
@@ -99,99 +100,100 @@ for (sex in sexes){
     
     #For age we only use the model with all the covariates that change with age
     if(analy =="age" & test =="all_cov_no_inter"){
-            all<- readRDS( paste0(inpath, test, "/", tissue, "_", test, "_AGE_covariates_and_traits.results.rds"))
-            all<-all$Age
-            print(paste0("#-------------- ", tissue, " - ", test, " - ", analy, " --------------#"))
+        all<- readRDS( paste0("./", tissue, "_", test, "_AGE_covariates_and_traits.results.rds"))
+        all<-all$Age
+        print(paste0("#-------------- ", tissue, " - ", test, " - ", analy, " --------------#"))
 
-            if (!tissue %in% c("CervixEndocervix","CervixEctocervix", "FallopianTube")){
-              
-              degs<- all[all$adj.P.Val<0.05,]
-            }else{
-              degs<- all[all$P.Value<0.01,]
-              
-            }
-            neg_ut<- degs[degs$logFC<0,]
-            pos_ut<-degs[degs$logFC>0,]
+        if (!tissue %in% c("CervixEndocervix","CervixEctocervix", "FallopianTube")){
+          
+          degs<- all[all$adj.P.Val<0.05,]
+        }else{
+          degs<- all[all$P.Value<0.01,]
+          
+        }
+        
+        neg_ut<- degs[degs$logFC<0,]
+        pos_ut<-degs[degs$logFC>0,]
 
-            neg_value <- ifelse(is.null(neg), 0, neg)
-            pos_value <- ifelse(is.null(pos), 0, pos)
+        neg_value <- ifelse(is.null(neg), 0, neg)
+        pos_value <- ifelse(is.null(pos), 0, pos)
 
-            degs<- intersect(rownames(pos_ut), rownames(pos_ov))
-              
-            if ((neg_value + pos_value) > 3) {
-                
-            ### 3.Enrichment
-            dea_res_all<-all
-            dea_res <- rownames(all) ##all the genes that appear in the tissue
-                
-            # Lists of DEGs ----
-            de.genes <- rownames(degs)
-            #Gene annotation
+        degs<- intersect(rownames(pos_ut), rownames(pos_ov))
+          
+        if ((neg_value + pos_value) > 3) {
             
-            # Functional enrichments 1 ----
-            dbs <- c("GO:BP", "GO:MF","GO:CC", "KEGG", "ReactomePA","human_phenotype","DisGeNET","OMIM", "gwas")#, "cell_marker", "xCell")#"H", "DO","cell_marker", "xCell"
+        ### 3.Enrichment
+        dea_res_all<-all
+        dea_res <- rownames(all) ##all the genes that appear in the tissue
             
-            # input -> variable-DEGs
-            # bg -> tissue expressed genes
-            
-            #Create two sets of both tissue_exprs_genes and variable_DEGs, one selecting the 
-            #entrez.id for those databases that do not use the gene.name and another one selecting the
-            #gene.name, since with this latter approach we remove less genes.
-            
-            tissue_exprs_genes_entrez.id <- sapply(dea_res, function(gene) gene_annotation[gene_annotation$ensembl.id==gene, "entrez.id"])
-            tissue_exprs_genes_entrez.id <- unlist(tissue_exprs_genes_entrez.id[!is.na(tissue_exprs_genes_entrez.id)])
-            
-            tissue_exprs_genes_symbols <- sapply(dea_res, function(gene) gene_annotation[gene_annotation$ensembl.id==gene, "gene.name.x"])
-            tissue_exprs_genes_symbols <- unlist(tissue_exprs_genes_symbols[!is.na(tissue_exprs_genes_symbols)])
-            
-            
-            variable_DEGs_entrez.id <-  sapply(de.genes, function(gene) gene_annotation[gene_annotation$ensembl.id==gene, "entrez.id"])
-            variable_DEGs_entrez.id<- unlist(variable_DEGs_entrez.id[!is.na(variable_DEGs_entrez.id)])
-            
-            variable_DEGs_symbols <-  sapply(de.genes, function(gene) gene_annotation[gene_annotation$ensembl.id==gene, "gene.name.x"])
-            variable_DEGs_symbols<- variable_DEGs_symbols[!is.na(variable_DEGs_symbols)]
-            
-            
-            print("Number of variable-DEGs with entrez.id")
-            print(length(variable_DEGs_entrez.id))
-            print("Number of variable-DEGs with symbols")
-            print(length(variable_DEGs_symbols))
-            
-            
-            #Select the db that uses entrez or symbols
-            dbs_entrez<- c("KEGG", "ReactomePA","DO","DisGeNET","OMIM", "human_phenotype","H","cell_marker")
-            dbs_symbols<- dbs[!dbs %in% dbs_entrez]
-            
-            #Perform the enrichments
-            
-            # Functional enrichments 2 ----
-            # input -> variable-DEGs-upregulated(downregulated)
-            # bg -> tissue expressed genes
-            
-            directions<- c("Upregulated", "Downregulated")
-            
-            if (tissue %in% c("Vagina", "BreastMammaryTissue", "Uterus", "Ovary")){
-              get_degs <- function(db,direction){
-              if(direction == "Upregulated" & db %in% dbs_symbols){
-                sapply(rownames(dea_res_all[dea_res_all$adj.P.Val < 0.05 &
-                                              dea_res_all$logFC > 0,]), function(gene)
-                                                gene_annotation[gene_annotation$ensembl.id==gene, "gene.name.x"]
-                )
-              }else if(direction == "Downregulated" & db %in% dbs_symbols){
-                sapply(rownames(dea_res_all[dea_res_all$adj.P.Val < 0.05 &
-                                              dea_res_all$logFC < 0,]), function(gene)
-                                                gene_annotation[gene_annotation$ensembl.id==gene, "gene.name.x"]
-                )
-              }else if(direction == "Upregulated" & db %in% dbs_entrez){
-                sapply(rownames(dea_res_all[dea_res_all$adj.P.Val < 0.05 &
-                                              dea_res_all$logFC > 0,]), function(gene)
-                                                gene_annotation[gene_annotation$ensembl.id==gene,  "entrez.id"])
-              }else if(direction == "Downregulated" & db %in% dbs_entrez){
-                sapply(rownames(dea_res_all[dea_res_all$adj.P.Val < 0.05 &
-                                              dea_res_all$logFC < 0,]), function(gene)
-                                                gene_annotation[gene_annotation$ensembl.id==gene, "entrez.id"])
+        # Lists of DEGs ----
+        de.genes <- rownames(degs)
+        #Gene annotation
+        
+        # Functional enrichments 1 ----
+        dbs <- c("GO:BP", "GO:MF","GO:CC", "KEGG", "ReactomePA","human_phenotype","DisGeNET","OMIM", "gwas")#, "cell_marker", "xCell")#"H", "DO","cell_marker", "xCell"
+        
+        # input -> variable-DEGs
+        # bg -> tissue expressed genes
+        
+        #Create two sets of both tissue_exprs_genes and variable_DEGs, one selecting the 
+        #entrez.id for those databases that do not use the gene.name and another one selecting the
+        #gene.name, since with this latter approach we remove less genes.
+        
+        tissue_exprs_genes_entrez.id <- sapply(dea_res, function(gene) gene_annotation[gene_annotation$ensembl.id==gene, "entrez.id"])
+        tissue_exprs_genes_entrez.id <- unlist(tissue_exprs_genes_entrez.id[!is.na(tissue_exprs_genes_entrez.id)])
+        
+        tissue_exprs_genes_symbols <- sapply(dea_res, function(gene) gene_annotation[gene_annotation$ensembl.id==gene, "gene.name.x"])
+        tissue_exprs_genes_symbols <- unlist(tissue_exprs_genes_symbols[!is.na(tissue_exprs_genes_symbols)])
+        
+        
+        variable_DEGs_entrez.id <-  sapply(de.genes, function(gene) gene_annotation[gene_annotation$ensembl.id==gene, "entrez.id"])
+        variable_DEGs_entrez.id<- unlist(variable_DEGs_entrez.id[!is.na(variable_DEGs_entrez.id)])
+        
+        variable_DEGs_symbols <-  sapply(de.genes, function(gene) gene_annotation[gene_annotation$ensembl.id==gene, "gene.name.x"])
+        variable_DEGs_symbols<- variable_DEGs_symbols[!is.na(variable_DEGs_symbols)]
+        
+        
+        print("Number of variable-DEGs with entrez.id")
+        print(length(variable_DEGs_entrez.id))
+        print("Number of variable-DEGs with symbols")
+        print(length(variable_DEGs_symbols))
+        
+        
+        #Select the db that uses entrez or symbols
+        dbs_entrez<- c("KEGG", "ReactomePA","DO","DisGeNET","OMIM", "human_phenotype","H","cell_marker")
+        dbs_symbols<- dbs[!dbs %in% dbs_entrez]
+        
+        #Perform the enrichments
+        
+        # Functional enrichments 2 ----
+        # input -> variable-DEGs-upregulated(downregulated)
+        # bg -> tissue expressed genes
+        
+        directions<- c("Upregulated", "Downregulated")
+        
+        if (tissue %in% c("Vagina", "BreastMammaryTissue", "Uterus", "Ovary")){
+          get_degs <- function(db,direction){
+          if(direction == "Upregulated" & db %in% dbs_symbols){
+            sapply(rownames(dea_res_all[dea_res_all$adj.P.Val < 0.05 &
+                                          dea_res_all$logFC > 0,]), function(gene)
+                                            gene_annotation[gene_annotation$ensembl.id==gene, "gene.name.x"]
+            )
+          }else if(direction == "Downregulated" & db %in% dbs_symbols){
+            sapply(rownames(dea_res_all[dea_res_all$adj.P.Val < 0.05 &
+                                          dea_res_all$logFC < 0,]), function(gene)
+                                            gene_annotation[gene_annotation$ensembl.id==gene, "gene.name.x"]
+            )
+          }else if(direction == "Upregulated" & db %in% dbs_entrez){
+            sapply(rownames(dea_res_all[dea_res_all$adj.P.Val < 0.05 &
+                                          dea_res_all$logFC > 0,]), function(gene)
+                                            gene_annotation[gene_annotation$ensembl.id==gene,  "entrez.id"])
+          }else if(direction == "Downregulated" & db %in% dbs_entrez){
+            sapply(rownames(dea_res_all[dea_res_all$adj.P.Val < 0.05 &
+                                          dea_res_all$logFC < 0,]), function(gene)
+                                            gene_annotation[gene_annotation$ensembl.id==gene, "entrez.id"])
 
-              }
+          }
             }
             }else{
               get_degs <- function(db,direction){
@@ -548,7 +550,7 @@ for (sex in sexes){
       }
       }
     }
-    }
-  }
+ 
+
 
   
