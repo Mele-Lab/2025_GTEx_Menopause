@@ -26,18 +26,16 @@ aging and menopause-associated disease risk.
 
 ### - 01. CNNs
 - CNN_training.py, CNN_predict.py: VGG19-based CNN models' code for histological tissue tiles (training and predicting).
-- pretrained_vgg19_bn.pt: pretrained model used.
 - data_examples: uterus tiles for train, test, and external validation set + middle age.
+- You need a pretrained VGG-19 model to run this.
       
 ### - 02. LIME (Local Interpretable Model-Agnostic Explanations)
 - LIME.py: adaptation of LIME code to our purpose: identify tile areas that contribute to each classification category using our CNN models. LIME article available at: https://arxiv.org/abs/1606.05386.
-- hybrid_tile_256_Vagina_trained_model_vgg19_bn_1024RSM.pt: trained model for vagina tiles.
 - GTEX-11P81-2125_126.png: example of a vagina tile to run the code and perform the interpretation.
 - GTEX-11P81-2125_126image_lime.pdf: output example.
       
 ### - 03. Tissue segmentation
 - tissue_segmentation.m: MATLAB code used for manually segmenting female reproductive organs into their constituent tissues, and then using them for KNN and later segmentation for all the WSIs. MATLAB version R2024b, https://es.mathworks.com/help/install/ug/install-products-with-internet-connection.html.
-- GTEX-14PJ6-1625.svs: image example to segment.
 - Segmentation: output example from the segmentation for vagina.
       
 ### - 04. CellProfiler postprocessing
