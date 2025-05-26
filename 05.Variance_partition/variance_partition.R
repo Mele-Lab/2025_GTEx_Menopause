@@ -121,7 +121,7 @@ atrophicValidationDonors = c("GTEX-1399S", "GTEX-1PIEJ", "GTEX-1R9JW", "GTEX-QDT
 if (tissue=="BreastMammaryTissue"){
   atrophicValidationDonors= c("GTEX-1399S", "GTEX-1MA7W", "GTEX-1PIEJ", "GTEX-1QPFJ", "GTEX-QDT8",  "GTEX-S7SF",  "GTEX-WRHK")
 }
-
+gc()
 tile_features = tile_features[!tile_features$gtex %in% atrophicValidationDonors,]
 tile_features$age = GTEx_Subject_Phenotypes.GRU$AGE[match(tile_features$gtex, GTEx_Subject_Phenotypes.GRU$SUBJID)]
 tile_features$HardyScale = GTEx_Subject_Phenotypes.GRU$DTHHRDY[match(tile_features$gtex, GTEx_Subject_Phenotypes.GRU$SUBJID)]

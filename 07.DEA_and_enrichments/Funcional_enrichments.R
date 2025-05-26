@@ -30,6 +30,8 @@ gwas.term2gene <- gwas.term2gene %>%
   mutate(Genes = gsub(" - |,|;", ",", MAPPED_GENE)) %>%  # unify separators to comma
   separate_rows(Genes, sep = ",\\s*")              # split into separate rows
 
+write.csv(gwas.term2gene, "Desktop/TFM/bsc83671/GTEx_v8/Laura/2025_GTEx_Menopause/00.Data/enrichments_dbs_files/gwas.term2gene.tsv")
+
 H<-read.csv(paste0(input_path,"/hallmark_file.csv"))[2:3]
 
 
