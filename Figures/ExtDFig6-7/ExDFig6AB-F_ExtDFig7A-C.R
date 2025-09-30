@@ -1,4 +1,4 @@
-#Fig 3 FGHI
+
 library(ComplexHeatmap)
 library("MOFA2")
 library("MOFAdata")

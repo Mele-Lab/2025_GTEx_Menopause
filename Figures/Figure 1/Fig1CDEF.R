@@ -13,11 +13,12 @@ library(stats)
 
 #C
 #Read CNN's probabilities per-donor and per-tile
-result_cnn<- readRDS("X/Laura/05.CNN/metrics_new_validation_filtered_perdonor_ACC.rds")
-result_cnn_pertile<- readRDS("X/Laura/05.CNN/metrics_new_validation_filteredpertile_ACC.rds")
+result_cnn<- readRDS("X/05.CNN/metrics_new_validation_filtered_perdonor_ACC.rds")
+result_cnn_pertile<- readRDS("X/05.CNN/metrics_new_validation_filteredpertile_ACC.rds")
 result_cnn$Metric<- "Per-donor"
 result_cnn_pertile$Metric <- "Per-tile"
 pal <- c("Uterus" = "#6DB6FFFF", "Ovary" = "#009292FF", "Vagina" = "#B66DFFFF", "Breast" = "#490092FF", "CervixEndocervix"= "#FF6DB6FF", "CervixEctocervix"="#FFB6DBFF", "FallopianTube"="#DB6D00FF")
+pal <- c("Uterus" = "#6DB6FFFF")
 
 global<- rbind(result_cnn, result_cnn_pertile)#
 rownames(global)[4]<-"Breast"
@@ -73,10 +74,13 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(stats)
+# install.packages("segmented")
 
 # Option 1: Maximum slope using LOESS
 find_max_slope_point_loess <- function(age, measurement, span = 0.75) {
   # Ensure data is sorted by age
+  
+  
   ord <- order(age)
   age <- age[ord]
   measurement <- measurement[ord]
@@ -166,11 +170,11 @@ analyze_organ_trajectories_gen <- function(long_data,
   # Create plot with custom colors for reproductive organs
   organ_colors <- c("#490092FF","#6DB6FFFF","#009292FF","#B66DFFFF")
   if (organ_level){
-    organ_colors <- c("Uterus"="#6DB6FFFF", "Ovary" = "#009292FF","Vagina" = "#B66DFFFF")
+    organ_colors <- c("BreastMammaryTissue"= "#490092FF", "Uterus"="#6DB6FFFF", "Ovary" = "#009292FF","Vagina" = "#B66DFFFF")
   }
   p <- ggplot() +
     # Add individual points
-    geom_point(data = long_data, 
+    geom_point(data = long_data, ##COMMENT FOR PROTEOMICS, dots not informative --too many
                aes(x = age, y = measurement, color = organ), 
                alpha = 0.2, size = 0.3) +
     # Add smoothed trajectories
@@ -188,6 +192,8 @@ analyze_organ_trajectories_gen <- function(long_data,
   }
   ###if it's organ trajectories, write "Organ", if tissue - "Tissue"
   ylabel = ifelse(organ_level, "Probability (being old organ)", "Probability (being old tissue)")
+  # ylabel = ifelse(organ_level, "Predicted age", "Probability (being old tissue)")
+  
   color_label = ifelse(organ_level, "Organ","Tissue")
   # Customize appearance
   p <- p + ylim(0,1)+
@@ -218,13 +224,20 @@ analyze_organ_trajectories_gen <- function(long_data,
 
 #### 1. Load the data
 prfx = paste0(input, "/Ole/paper/for_plotting/")
+
 ### CNN data
 merged_df = readRDS(paste0(prfx, "CNN_classification.rds"))
+
+##Proteomics data
+merged_df = readRDS(paste0(prfx, "proteomics_classification.rds"))
+
 ### Gene expression data
 merged_df = readRDS(paste0(prfx, "GE_classification.rds"))
+
 ### Subtissue data
 tissues = c("Vagina", "Uterus", "Ovary")
 tiss<-tissues[3]
+
 merged_df = readRDS(paste0(prfx,tiss,"_subtissues_classification.rds"))
 
 if(tiss == "Uterus"){
@@ -235,8 +248,28 @@ if(tiss == "Uterus"){
   merged_df<-merged_df[merged_df$organ %in% c("corpora", "vessels", "cortex"),]
 }
 
+
+
 ### 2. Analyze the data
 # Analyze the CNN data
+
+age_file<-read.csv("/home/laura/X/00.Data/GTEx_phenotypes/GTEx_Subject_Phenotypes.GRU.csv", sep="\t", header=TRUE)
+merged_df$young<-NULL
+merged_df$SD_young<-NULL
+age_file<-age_file[,c("SUBJID", "AGE")]
+merged_df<- merge(merged_df, age_file, by.x="Donor", by.y="SUBJID")
+colnames(merged_df)[2]<-"measurement"
+
+
+merged_df$organ <-"Myometrium"
+
+colnames(merged_df)<-c("Donor", "age", "organ", "measurement")
+# Make sure columns are in the same order:
+merged_df <- merged_df[, c("Donor", "age", "organ", "measurement")]
+
+# Use bind_rows from dplyr
+library(dplyr)
+
 results = analyze_organ_trajectories_gen(merged_df, p_threshold = 0.05)
 
 # Plot the plot
@@ -250,8 +283,6 @@ p <- results$plot +
     legend.key = element_blank()  # Remove borders around legend items
   )
 p
-# Save the plot
-ggsave(paste0(prfx, "CNN_classification_plot.png"), plot = results$plot, width = 10, height = 6, dpi = 300)
 
 
 cnn<-p
@@ -259,9 +290,6 @@ ge<-p
 acc<-p
 all_tog<- acc+cnn+ge
 
-pdf("Desktop/Figures/Fig1_CDE.pdf", width = 12.2, height = 5.3) 
-all_tog
+pdf("X/Paper_material/Post_review_analyses/Fig1CDEF.pdf", width = 14, height = 5) 
+acc+cnn+ge
 dev.off()
-
-
-

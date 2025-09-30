@@ -10,13 +10,11 @@ input<- "X/"
 
 
 covariate_colors <- c(
-  "HardyScale"   = "#6DB6FFFF",  # HS
-  "IschemicTime" = "#FFB6DBFF",  # IT
+  "Residuals"   = "#6DB6FFFF",  # R
   "age"          = "#FF6DB6FF",  # AGE
   "ancestry"     = "#009292FF",  # AN
   "bmi"          = "#DB6D00FF"   # BMI
 )
-
 
 
 
@@ -83,7 +81,7 @@ for (tissue in tissues) {
   for (subtissue in subtissues) {
     # Load the results for the given tissue and subtissue
     results <- load_results(tissue, subtissue)
-    results$Residuals <- NULL
+    results$Residuals <- NULL ###UNCOMMENT FOR PLOTTING THEM
     
     # Identify the covariates by excluding feature rows
     covariates <- colnames(results)[!colnames(results) %in% rownames(results)]

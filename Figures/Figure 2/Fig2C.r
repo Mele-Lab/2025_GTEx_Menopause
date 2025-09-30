@@ -20,11 +20,11 @@ tissue_colors <- c(
   "FallopianTube" = "#DB6D00FF"
 )
 
-
+paste0(results_folder, "/",tissue, "/", subtissue, ".rds")
 # View the structure of the data to ensure it is read correctly
 str(yaml_data)
-results_folder <- paste0(input, "/Allal/Differential_expression/variance_partition/results/mean_tiles")
-
+results_folder <- paste0(input, "/Allal/variance_partition/results/results/mean_tiles")
+results_folder_ovary<- "/X/Paper_material/Post_review_analyses/variance_partition/"
 color_palette <- function(tissue) {
   # Check if the tissue exists in the yaml_data
   if (!tissue %in% names(yaml_data)) {
@@ -49,28 +49,34 @@ color_palette <- function(tissue) {
 
 
 load_results <- function(tissue,subtissue) {
-
+  if(tissue != "Ovary"){
     results_path <- paste0(results_folder, "/",tissue, "/", subtissue, ".rds")
     results <- readRDS(results_path)
-    return(results)
+    
+  }else{
+    results_path <- paste0(results_folder_ovary, "/",tissue, "/", subtissue, ".rds")
+    results <- readRDS(results_path)
+    
+  }
+  return(results)
 }
 
 
 violin_plot <- function(final_df) {
-    # Reshape the data into long format
-    df_long <- melt(final_df, varnames = c("Feature", "Subtissue"), value.name = "Age_Proportion")
-    df_long$variable <- gsub("age_proportion_", "", df_long$variable)
-
-    
-    # Create the violin plot
-    ggplot(df_long, aes(x = variable, y = value, fill = variable)) +
-        geom_violin(trim = FALSE) +
-        geom_boxplot(width = 0.05, outlier.shape = NA, color = "black") +  # Boxplot inside violin plot
-        theme_classic() +
-        labs(title = "Age Proportion Distribution by Subtissue", 
-             x = "Subtissue", 
-             y = "% of variance explained by age") +
-        scale_fill_manual(values = color_palette(tissue)) # Customize colors if needed
+  # Reshape the data into long format
+  df_long <- melt(final_df, varnames = c("Feature", "Subtissue"), value.name = "Age_Proportion")
+  df_long$variable <- gsub("age_proportion_", "", df_long$variable)
+  
+  
+  # Create the violin plot
+  ggplot(df_long, aes(x = variable, y = value, fill = variable)) +
+    geom_violin(trim = FALSE) +
+    geom_boxplot(width = 0.05, outlier.shape = NA, color = "black") +  # Boxplot inside violin plot
+    theme_classic() +
+    labs(title = "Age Proportion Distribution by Subtissue", 
+         x = "Subtissue", 
+         y = "% of variance explained by age") +
+    scale_fill_manual(values = color_palette(tissue)) # Customize colors if needed
 }
 
 
@@ -78,57 +84,61 @@ violin_plot <- function(final_df) {
 
 # Initialize an empty list to store results for all tissues
 all_tissues_list <- list()
-
 for (tissue in tissues) {
-    # Initialize an empty list to store the results for the current tissue
-    feature_list <- list()
-
-    # Get the list of files for the given tissue
+  # Initialize an empty list to store the results for the current tissue
+  feature_list <- list()
+  
+  # Get the list of files for the given tissue
+  if (!tissue == "Ovary"){
     files <- list.files(paste0(results_folder, "/", tissue), pattern = ".rds$", full.names = FALSE)
-
-    # Extract subtissue names
-    subtissues <- gsub(".rds", "", files)
-    subtissues <- subtissues[!grepl("_summary", subtissues)]
-
-    # Loop through subtissues
-    for(subtissue in subtissues) {
-        # Load the results for the given tissue and subtissue
-        results <- load_results(tissue, subtissue)
-
-        # Check if results have at least one row
-        if (nrow(results) == 0) next 
-
-        # Initialize an empty dataframe for feature proportions
-        feature_proportions <- data.frame(matrix(nrow = nrow(results), ncol = 1))
-
-        for (i in 1:nrow(results)) {
-            # Extract the current feature (row)
-            feature_values <- results[i, ]
-
-            # Get the value of 'age' for this feature
-            age_value <- feature_values["age"]
-
-            # Calculate the proportion explained by 'age'
-            age_proportion <- age_value * 100
-
-            # Store the result
-            feature_proportions[i, 1] <- age_proportion
-        }
-
-        # Name the column appropriately
-        colnames(feature_proportions) <- paste0("", subtissue)
-
-        # Store the dataframe in the list
-        feature_list[[subtissue]] <- feature_proportions
+    
+  }else{
+    files <- list.files(paste0(results_folder_ovary, "/", tissue), pattern = ".rds$", full.names = FALSE)
+    
+  }
+  
+  # Extract subtissue names
+  subtissues <- gsub(".rds", "", files)
+  subtissues <- subtissues[!grepl("_summary", subtissues)]
+  
+  # Loop through subtissues
+  for(subtissue in subtissues) {
+    # Load the results for the given tissue and subtissue
+    results <- load_results(tissue, subtissue)
+    
+    # Check if results have at least one row
+    if (nrow(results) == 0) next 
+    
+    # Initialize an empty dataframe for feature proportions
+    feature_proportions <- data.frame(matrix(nrow = nrow(results), ncol = 1))
+    
+    for (i in 1:nrow(results)) {
+      # Extract the current feature (row)
+      feature_values <- results[i, ]
+      
+      # Get the value of 'age' for this feature
+      age_value <- feature_values["age"]
+      
+      # Calculate the proportion explained by 'age'
+      age_proportion <- age_value * 100
+      
+      # Store the result
+      feature_proportions[i, 1] <- age_proportion
     }
-
-    # Combine all subtissue results into one dataframe for this tissue
-    if (length(feature_list) > 0) {
-        tissue_df <- do.call(cbind, feature_list)
-        all_tissues_list[[tissue]] <- tissue_df
-    }
+    
+    # Name the column appropriately
+    colnames(feature_proportions) <- paste0("", subtissue)
+    
+    # Store the dataframe in the list
+    feature_list[[subtissue]] <- feature_proportions
+  }
+  
+  # Combine all subtissue results into one dataframe for this tissue
+  if (length(feature_list) > 0) {
+    tissue_df <- do.call(cbind, feature_list)
+    all_tissues_list[[tissue]] <- tissue_df
+  }
 }
-
 # Combine results from all tissues into one dataframe
 final_df <- do.call(cbind, all_tissues_list)
 
