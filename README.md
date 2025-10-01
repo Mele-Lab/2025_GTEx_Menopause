@@ -25,14 +25,16 @@ aging and menopause-associated disease risk.
 - gencode.v39.annotation.bed: GENCODE annotation for genes.
 
 ### - 01. CNNs
-- CNN_training.py, CNN_predict.py: VGG19-based CNN models' code for histological tissue tiles (training and predicting).
+- CNN_training.py, CNN_predict.py: VGG19-based CNN models' code for histological tissue tiles, predicting pre- or post-menopausal status (training and predicting).
+- temp_scaling.py: same CNN script, but applying temperature scaling as calibration method to remove possible over estimation.
+-CNN_regression.py, predict_regression.py: VGG19-based CNN models' code for histological tissue tiles, but predicting ocntinuous age (training and predicting).
 - data_examples: uterus tiles for train, test, and external validation set + middle age.
 - You need a pretrained VGG-19 model to run this.
       
-### - 02. LIME (Local Interpretable Model-Agnostic Explanations)
-- LIME.py: adaptation of LIME code to our purpose: identify tile areas that contribute to each classification category using our CNN models. LIME article available at: https://arxiv.org/abs/1606.05386.
-- GTEX-11P81-2125_126.png: example of a vagina tile to run the code and perform the interpretation.
-- GTEX-11P81-2125_126image_lime.pdf: output example.
+### - 02. Grad-CAM (Gradient-weighted Class Activation Mapping)
+- Grad_CAM_absval.py/GradCAM_noabsval.py/GradCAM_threshol.py: different scripts to run GradCAM. Grad-CAM article available at: https://arxiv.org/abs/1610.02391.
+- view_model.py : useful to get specifications of the CNN model to adapt each method to the CNN architecture.
+- Vagina_example.png: example of a vagina tile with GradCAM heatmap over it.
       
 ### - 03. Tissue segmentation
 - tissue_segmentation.m: MATLAB code used for manually segmenting female reproductive organs into their constituent tissues, and then using them for KNN and later segmentation for all the WSIs. MATLAB version R2024b, https://es.mathworks.com/help/install/ug/install-products-with-internet-connection.html.
@@ -65,6 +67,13 @@ MOFA original repository: https://github.com/bioFAM/MOFA2
 - coda_pivot_coordinates.R: CODA implementation to test both cell-type and tissue proportion changes with age.
 
 ### - 10. Single-cell analysis
+- Analysis of single-cell data from: 
+  - Punzon-Jimenez, P. et al. Effect of aging on the human myometrium at single-cell resolution. Nat Commun 15, 945 (2024)
+  - Weigert, M. et al. A cell atlas of the human fallopian tube throughout the menstrual cycle and menopause. Nature Communications 16, 1–15 (2025)
 
+### - 11. Spatial transcriptomics visualization
+- spatial_visualization.py: spatial visualization of gene expression to corroborate our findings. Spatial data obtained from Punzon-Jimenez, P. et al. Effect of aging on the human myometrium at single-cell resolution. Nat Commun 15, 945 (2024)
+
+ 
 ## System requirements
 All the originally generated code has been run in R v4.4.1 or Python v3.11.5, and can be run on any operating system (Linux, macOS, Windows). The specific packages needed for each step are specified in the corresponding scripts. Each script runs in a few minutes.
